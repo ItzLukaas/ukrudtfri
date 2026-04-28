@@ -11,20 +11,20 @@ import { cn } from "@/lib/utils";
 import { ArrowRight, BadgeCheck, CalendarCheck2, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: { absolute: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland" },
+  title: { absolute: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner" },
   description:
     "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
   alternates: { canonical: SITE_URL },
   openGraph: {
     url: SITE_URL,
-    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland",
+    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner",
     description:
       "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
     images: [{ url: `${SITE_URL}/images/hero-3.jpg`, width: 1200, height: 630, alt: SITE_BRAND }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland",
+    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner",
     description:
       "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
     images: [`${SITE_URL}/images/hero-3.jpg`],

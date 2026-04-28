@@ -12,7 +12,7 @@ export const SERVICE_CITIES = [
   "Tørring",
 ] as const;
 
-export const DEFAULT_SEO_TITLE = "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland";
+export const DEFAULT_SEO_TITLE = "Ukrudtfri.dk | Professionel sprøjtning af græsplæner";
 
 export const DEFAULT_SEO_DESCRIPTION =
   "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.";
