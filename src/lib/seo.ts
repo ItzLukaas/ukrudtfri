@@ -12,10 +12,12 @@ export const SERVICE_CITIES = [
   "Tørring",
 ] as const;
 
-export const DEFAULT_SEO_TITLE = "Certificeret plænesprøjtning i Give, Grindsted og Vejle";
+export const DEFAULT_SEO_TITLE = "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland";
 
 export const DEFAULT_SEO_DESCRIPTION =
-  "Få en tæt og grøn græsplæne med certificeret ukrudtsbekæmpelse. Vi hjælper i Give, Grindsted, Brande og Vejle med godkendte midler og lokal service.";
+  "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.";
+
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/hero-3.jpg`;
 
 export const SITE_KEYWORDS = [
   "ukrudtfri",
@@ -38,19 +40,21 @@ export const defaultOpenGraph = {
   title: DEFAULT_SEO_TITLE,
   description: DEFAULT_SEO_DESCRIPTION,
   url: SITE_URL,
+  images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: SITE_BRAND }],
 } satisfies NonNullable<Metadata["openGraph"]>;
 
 export const defaultTwitter = {
   card: "summary_large_image",
   title: DEFAULT_SEO_TITLE,
   description: DEFAULT_SEO_DESCRIPTION,
+  images: [DEFAULT_OG_IMAGE],
 } satisfies NonNullable<Metadata["twitter"]>;
 
 export const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: SITE_BRAND,
-  image: `${SITE_URL}/images/logo.svg`,
+  image: `${SITE_URL}/images/logo.png`,
   url: SITE_URL,
   description: DEFAULT_SEO_DESCRIPTION,
   telephone: "+4541820046",

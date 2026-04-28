@@ -26,28 +26,28 @@ export function SiteHeader({ baseLabel, baseLatitude, baseLongitude }: { baseLab
           >
             Book sprøjtning af din græsplæne på under 2 min
           </Link>
-          <div className="flex items-center gap-x-2 text-[11px] sm:shrink-0 sm:gap-x-4 sm:text-sm">
+          <div className="flex items-center gap-x-1.5 text-[10px] sm:shrink-0 sm:gap-x-4 sm:text-sm">
             <a
               href="tel:+4541820046"
-              className="inline-flex min-h-10 items-center gap-1 text-[#d7e3da] transition-colors hover:text-white"
+              className="inline-flex min-h-10 items-center gap-0.5 text-[#d7e3da] transition-colors hover:text-white"
             >
-              <Phone className="size-3.5 shrink-0 text-[#d7e3da]" aria-hidden />
+              <Phone className="size-3 shrink-0 text-[#d7e3da]" aria-hidden />
               +45 41 82 00 46
             </a>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="inline-flex min-h-10 min-w-0 items-center gap-1 whitespace-nowrap text-[#d7e3da] transition-colors hover:text-white"
+              className="inline-flex min-h-10 min-w-0 items-center gap-0.5 whitespace-nowrap text-[#d7e3da] transition-colors hover:text-white"
             >
-              <Mail className="size-3.5 shrink-0 text-[#d7e3da]" aria-hidden />
+              <Mail className="size-3 shrink-0 text-[#d7e3da]" aria-hidden />
               <span className="truncate">{CONTACT_EMAIL}</span>
             </a>
             <a
               href={mapHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-10 min-w-0 items-center gap-1 whitespace-nowrap text-[#d7e3da] transition-colors hover:text-white"
+              className="inline-flex min-h-10 min-w-0 items-center gap-0.5 whitespace-nowrap text-[#d7e3da] transition-colors hover:text-white"
             >
-              <MapPin className="size-3.5 shrink-0 text-[#d7e3da]" aria-hidden />
+              <MapPin className="size-3 shrink-0 text-[#d7e3da]" aria-hidden />
               <span className="truncate">{topbarAddress}</span>
             </a>
           </div>
@@ -70,7 +70,7 @@ export function SiteHeader({ baseLabel, baseLatitude, baseLongitude }: { baseLab
             width={280}
             height={76}
             priority
-            className="h-14 w-auto object-contain sm:h-16"
+            className="h-14 w-auto scale-110 object-contain sm:h-16"
           />
         </Link>
 

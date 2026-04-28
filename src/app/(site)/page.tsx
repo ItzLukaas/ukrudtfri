@@ -11,15 +11,23 @@ import { cn } from "@/lib/utils";
 import { ArrowRight, BadgeCheck, CalendarCheck2, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: { absolute: "Certificeret plænesprøjtning i Give, Grindsted og Vejle" },
+  title: { absolute: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland" },
   description:
-    "Få en tæt og grøn græsplæne med certificeret ukrudtsbekæmpelse. Vi hjælper i Give, Grindsted, Brande og Vejle med godkendte midler og lokal service.",
+    "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
   alternates: { canonical: SITE_URL },
   openGraph: {
     url: SITE_URL,
-    title: "Certificeret plænesprøjtning i Give, Grindsted og Vejle",
+    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland",
     description:
-      "Få en tæt og grøn græsplæne med certificeret ukrudtsbekæmpelse. Vi hjælper i Give, Grindsted, Brande og Vejle med godkendte midler og lokal service.",
+      "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+    images: [{ url: `${SITE_URL}/images/hero-3.jpg`, width: 1200, height: 630, alt: SITE_BRAND }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner i Jylland",
+    description:
+      "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+    images: [`${SITE_URL}/images/hero-3.jpg`],
   },
 };
 

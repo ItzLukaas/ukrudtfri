@@ -54,11 +54,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     ...defaultOpenGraph,
-    images: [{ url: "/images/logo.png", width: 512, height: 512, alt: SITE_BRAND }],
   },
   twitter: {
     ...defaultTwitter,
-    images: ["/images/logo.png"],
   },
   robots: {
     index: true,
