@@ -97,6 +97,10 @@ export function AdminPoliciesClient({ initial }: { initial: AdminDashboardPayloa
         </CardHeader>
         <CardContent className="space-y-2">
           <Label htmlFor="terms-t">Aftalebetingelser</Label>
+          <p className="text-xs text-muted-foreground">
+            Brug variablerne <code>{"{{pricePerSquareMeter}}"}</code>, <code>{"{{minimumPrice}}"}</code>,{" "}
+            <code>{"{{serviceRadiusKm}}"}</code> og <code>{"{{baseLabel}}"}</code> for altid at vise aktuelle settings.
+          </p>
           <PolicyMarkdownEditor
             value={policies.termsPolicyText}
             onChange={(next) => setPolicies((p) => ({ ...p, termsPolicyText: next }))}

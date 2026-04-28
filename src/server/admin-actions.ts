@@ -19,11 +19,22 @@ function revalidateAdmin() {
     "/admin/availability",
     "/admin/blocks",
     "/admin/settings",
+    "/admin/account",
     "/admin/policies",
     "/admin/mail",
   ];
   for (const p of paths) revalidatePath(p);
+  revalidatePath("/");
   revalidatePath("/booking");
+  revalidatePath("/kontakt");
+}
+
+function parseFlexibleNumber(value: unknown) {
+  if (typeof value === "string") {
+    const normalized = value.replaceAll(",", ".").trim();
+    return normalized === "" ? Number.NaN : Number(normalized);
+  }
+  return Number(value);
 }
 
 async function requireAdmin() {
@@ -33,12 +44,12 @@ async function requireAdmin() {
 }
 
 const settingsSchema = z.object({
-  pricePerSquareMeter: z.coerce.number().positive().max(1000),
-  minimumPrice: z.coerce.number().positive().max(100_000),
-  serviceRadiusKm: z.coerce.number().positive().max(250),
+  pricePerSquareMeter: z.preprocess(parseFlexibleNumber, z.number().positive().max(1000)),
+  minimumPrice: z.preprocess(parseFlexibleNumber, z.number().positive().max(100_000)),
+  serviceRadiusKm: z.preprocess(parseFlexibleNumber, z.number().positive().max(250)),
   baseLabel: z.string().trim().min(2).max(120),
-  baseLatitude: z.coerce.number().min(-90).max(90),
-  baseLongitude: z.coerce.number().min(-180).max(180),
+  baseLatitude: z.preprocess(parseFlexibleNumber, z.number().min(-90).max(90)),
+  baseLongitude: z.preprocess(parseFlexibleNumber, z.number().min(-180).max(180)),
 });
 
 export async function updateSiteSettingsAction(raw: unknown) {
@@ -79,8 +90,28 @@ export async function bulkCreateOpenSlotsAction(raw: unknown) {
   const gen = generateCandidateSlots(parsed.data as GenerateSlotsInput);
   if (!gen.ok) return { ok: false as const, message: gen.error };
 
-  const blocks = await prisma.blockedWindow.findMany();
-  const existing = await prisma.openSlot.findMany({ select: { startsAt: true, endsAt: true } });
+  if (gen.slots.length === 0) return { ok: true as const, created: 0 };
+
+  const rangeStart = gen.slots[0]?.startsAt;
+  const rangeEnd = gen.slots[gen.slots.length - 1]?.endsAt;
+  if (!rangeStart || !rangeEnd) return { ok: true as const, created: 0 };
+
+  const [blocks, existing] = await Promise.all([
+    prisma.blockedWindow.findMany({
+      where: {
+        startsAt: { lt: rangeEnd },
+        endsAt: { gt: rangeStart },
+      },
+      select: { startsAt: true, endsAt: true },
+    }),
+    prisma.openSlot.findMany({
+      where: {
+        startsAt: { lt: rangeEnd },
+        endsAt: { gt: rangeStart },
+      },
+      select: { startsAt: true, endsAt: true },
+    }),
+  ]);
 
   const overlaps = (aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) => aStart < bEnd && bStart < aEnd;
 

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
   return (
     <main className="bg-background">
       <section className="border-b border-border/60 bg-muted/30">

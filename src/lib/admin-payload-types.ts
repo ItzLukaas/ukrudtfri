@@ -71,4 +71,6 @@ export type AdminDashboardPayload = {
   blocks: Array<{ id: string; startsAt: string; endsAt: string; note: string | null }>;
   emailTemplates: Array<{ id: string; slug: string; name: string; subject: string; bodyHtml: string; updatedAt: string }>;
   icalFeedUrl: string | null;
+  icalWebcalUrl: string | null;
+  icalFeedMissingEnv: string[];
 };

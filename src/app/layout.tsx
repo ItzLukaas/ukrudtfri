@@ -31,9 +31,12 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/images/logo.png",
-    shortcut: "/images/logo.png",
-    apple: "/images/logo.png",
+    icon: [
+      { url: "/images/favicon.ico", type: "image/x-icon" },
+      { url: "/images/favicon.ico", sizes: "any", type: "image/x-icon" },
+    ],
+    shortcut: [{ url: "/images/favicon.ico", type: "image/x-icon" }],
+    apple: [{ url: "/images/logo.png", sizes: "180x180", type: "image/png" }],
   },
   title: {
     default: DEFAULT_SEO_TITLE,
@@ -49,8 +52,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  openGraph: defaultOpenGraph,
-  twitter: defaultTwitter,
+  openGraph: {
+    ...defaultOpenGraph,
+    images: [{ url: "/images/logo.png", width: 512, height: 512, alt: SITE_BRAND }],
+  },
+  twitter: {
+    ...defaultTwitter,
+    images: ["/images/logo.png"],
+  },
   robots: {
     index: true,
     follow: true,

@@ -15,7 +15,7 @@ export const SERVICE_CITIES = [
 export const DEFAULT_SEO_TITLE = "Certificeret plænesprøjtning i Give, Grindsted og Vejle";
 
 export const DEFAULT_SEO_DESCRIPTION =
-  "Få en tæt og grøn græsplæne med certificeret ukrudtsbekæmpelse. Vi hjælper i Give, Grindsted, Brande og Vejle med godkendte midler, lokal service og pris fra 1,5 kr./m².";
+  "Få en tæt og grøn græsplæne med certificeret ukrudtsbekæmpelse. Vi hjælper i Give, Grindsted, Brande og Vejle med godkendte midler og lokal service.";
 
 export const SITE_KEYWORDS = [
   "ukrudtfri",
@@ -50,7 +50,7 @@ export const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: SITE_BRAND,
-  image: `${SITE_URL}/images/logo.png`,
+  image: `${SITE_URL}/images/logo.svg`,
   url: SITE_URL,
   description: DEFAULT_SEO_DESCRIPTION,
   telephone: "+4541820046",

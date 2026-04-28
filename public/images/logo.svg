@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Ukrudtfri logo</title>
+  <desc id="desc">Rundt logo med blad og bogstaverne U F.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b4a31" />
+      <stop offset="100%" stop-color="#0a3624" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#bg)" />
+  <path
+    d="M340 96c-43 9-79 42-92 83-4 14-6 28-5 42 14-5 28-14 40-25 33-32 52-76 57-100z"
+    fill="#9fe4bb"
+  />
+  <path
+    d="M154 176v121c0 77 45 120 119 120 67 0 111-41 116-106h-60c-3 32-22 49-54 49-35 0-56-22-56-67V176h-65zm241 0v58h-64v183h64V176z"
+    fill="#f4fff8"
+  />
+</svg>

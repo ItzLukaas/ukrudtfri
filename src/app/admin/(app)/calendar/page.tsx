@@ -6,6 +6,12 @@ export const dynamic = "force-dynamic";
 export default async function AdminCalendarPage() {
   const data = await getAdminCalendarData();
   return (
-    <AdminCalendarClient slotsDetailed={data.slotsDetailed} blocks={data.blocks} icalFeedUrl={data.icalFeedUrl} />
+    <AdminCalendarClient
+      slotsDetailed={data.slotsDetailed}
+      blocks={data.blocks}
+      icalFeedUrl={data.icalFeedUrl}
+      icalWebcalUrl={data.icalWebcalUrl}
+      icalFeedMissingEnv={data.icalFeedMissingEnv}
+    />
   );
 }

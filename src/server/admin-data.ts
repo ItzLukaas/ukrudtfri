@@ -16,10 +16,42 @@ function emptyByStatus(): Record<BookingStatus, number> {
   };
 }
 
-function getIcalFeedUrl() {
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
+function getIcalFeedConfig() {
+  const rawSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim();
   const token = process.env.ADMIN_ICAL_TOKEN;
-  return siteUrl && token ? `${siteUrl}/api/admin/calendar/ics?token=${encodeURIComponent(token)}` : null;
+  const missingEnv: string[] = [];
+  if (!rawSiteUrl) missingEnv.push("NEXT_PUBLIC_SITE_URL");
+  if (!token) missingEnv.push("ADMIN_ICAL_TOKEN");
+
+  if (missingEnv.length > 0) {
+    return {
+      icalFeedUrl: null,
+      icalWebcalUrl: null,
+      icalFeedMissingEnv: missingEnv,
+    };
+  }
+
+  let base: URL;
+  try {
+    base = new URL(rawSiteUrl);
+  } catch {
+    return {
+      icalFeedUrl: null,
+      icalWebcalUrl: null,
+      icalFeedMissingEnv: ["NEXT_PUBLIC_SITE_URL (ugyldig URL)"],
+    };
+  }
+
+  const path = `/api/admin/calendar/ics?token=${encodeURIComponent(token ?? "")}`;
+  const httpsProtocol = base.protocol === "http:" || base.protocol === "https:" ? base.protocol : "https:";
+  const httpsUrl = `${httpsProtocol}//${base.host}${path}`;
+  const webcalProtocol = httpsProtocol === "https:" ? "webcal:" : "webcals:";
+
+  return {
+    icalFeedUrl: httpsUrl,
+    icalWebcalUrl: `${webcalProtocol}//${base.host}${path}`,
+    icalFeedMissingEnv: [],
+  };
 }
 
 export async function getAdminOverviewData(): Promise<Pick<AdminDashboardPayload, "stats">> {
@@ -50,7 +82,15 @@ export async function getAdminOverviewData(): Promise<Pick<AdminDashboardPayload
       },
       orderBy: { slot: { startsAt: "asc" } },
       take: 12,
-      include: { slot: true },
+      select: {
+        id: true,
+        customerName: true,
+        addressLine: true,
+        postalCode: true,
+        city: true,
+        status: true,
+        slot: { select: { startsAt: true } },
+      },
     }),
   ]);
 
@@ -91,13 +131,32 @@ export async function getAdminOverviewData(): Promise<Pick<AdminDashboardPayload
 }
 
 export async function getAdminCalendarData(): Promise<
-  Pick<AdminDashboardPayload, "slotsDetailed" | "blocks" | "icalFeedUrl">
+  Pick<AdminDashboardPayload, "slotsDetailed" | "blocks" | "icalFeedUrl" | "icalWebcalUrl" | "icalFeedMissingEnv">
 > {
+  const icalFeed = getIcalFeedConfig();
   const [slots, blocks] = await Promise.all([
     prisma.openSlot.findMany({
       orderBy: { startsAt: "asc" },
       take: 400,
-      include: { booking: true },
+      select: {
+        id: true,
+        startsAt: true,
+        endsAt: true,
+        booking: {
+          select: {
+            id: true,
+            customerName: true,
+            customerEmail: true,
+            customerPhone: true,
+            addressLine: true,
+            postalCode: true,
+            city: true,
+            squareMeters: true,
+            totalPrice: true,
+            status: true,
+          },
+        },
+      },
     }),
     prisma.blockedWindow.findMany({ orderBy: { startsAt: "asc" }, take: 200 }),
   ]);
@@ -128,7 +187,9 @@ export async function getAdminCalendarData(): Promise<
       endsAt: b.endsAt.toISOString(),
       note: b.note,
     })),
-    icalFeedUrl: getIcalFeedUrl(),
+    icalFeedUrl: icalFeed.icalFeedUrl,
+    icalWebcalUrl: icalFeed.icalWebcalUrl,
+    icalFeedMissingEnv: icalFeed.icalFeedMissingEnv,
   };
 }
 
@@ -137,7 +198,20 @@ export async function getAdminBookingsData(): Promise<Pick<AdminDashboardPayload
     prisma.booking.findMany({
       orderBy: { createdAt: "desc" },
       take: 150,
-      include: { slot: true },
+      select: {
+        id: true,
+        createdAt: true,
+        customerName: true,
+        customerEmail: true,
+        customerPhone: true,
+        addressLine: true,
+        postalCode: true,
+        city: true,
+        squareMeters: true,
+        totalPrice: true,
+        status: true,
+        slot: { select: { startsAt: true, endsAt: true } },
+      },
     }),
     prisma.emailTemplate.findMany({ orderBy: { slug: "asc" } }),
   ]);
@@ -174,7 +248,7 @@ export async function getAdminAvailabilityData(): Promise<Pick<AdminDashboardPay
   const slots = await prisma.openSlot.findMany({
     orderBy: { startsAt: "asc" },
     take: 400,
-    include: { booking: true },
+    select: { id: true, startsAt: true, endsAt: true, booking: { select: { id: true } } },
   });
 
   return {
@@ -222,7 +296,7 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
   const monthStart = startOfMonth(today);
   const histogramFrom = subDays(today, 56);
 
-  const icalFeedUrl = getIcalFeedUrl();
+  const icalFeed = getIcalFeedConfig();
 
   const [
     settings,
@@ -239,12 +313,43 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
     prisma.openSlot.findMany({
       orderBy: { startsAt: "asc" },
       take: 400,
-      include: { booking: true },
+      select: {
+        id: true,
+        startsAt: true,
+        endsAt: true,
+        booking: {
+          select: {
+            id: true,
+            customerName: true,
+            customerEmail: true,
+            customerPhone: true,
+            addressLine: true,
+            postalCode: true,
+            city: true,
+            squareMeters: true,
+            totalPrice: true,
+            status: true,
+          },
+        },
+      },
     }),
     prisma.booking.findMany({
       orderBy: { createdAt: "desc" },
       take: 150,
-      include: { slot: true },
+      select: {
+        id: true,
+        createdAt: true,
+        customerName: true,
+        customerEmail: true,
+        customerPhone: true,
+        addressLine: true,
+        postalCode: true,
+        city: true,
+        squareMeters: true,
+        totalPrice: true,
+        status: true,
+        slot: { select: { startsAt: true, endsAt: true } },
+      },
     }),
     prisma.blockedWindow.findMany({ orderBy: { startsAt: "asc" }, take: 200 }),
     prisma.emailTemplate.findMany({ orderBy: { slug: "asc" } }),
@@ -270,7 +375,15 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
       },
       orderBy: { slot: { startsAt: "asc" } },
       take: 12,
-      include: { slot: true },
+      select: {
+        id: true,
+        customerName: true,
+        addressLine: true,
+        postalCode: true,
+        city: true,
+        status: true,
+        slot: { select: { startsAt: true } },
+      },
     }),
   ]);
 
@@ -382,7 +495,9 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
       bodyHtml: t.bodyHtml,
       updatedAt: t.updatedAt.toISOString(),
     })),
-    icalFeedUrl,
+    icalFeedUrl: icalFeed.icalFeedUrl,
+    icalWebcalUrl: icalFeed.icalWebcalUrl,
+    icalFeedMissingEnv: icalFeed.icalFeedMissingEnv,
   };
 }
 

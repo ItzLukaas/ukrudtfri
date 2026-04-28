@@ -73,7 +73,14 @@ export function BookingWizard({
   pricing,
   initialSlots,
 }: {
-  pricing: { pricePerSquareMeter: number; minimumPrice: number; serviceRadiusKm: number; baseLabel: string };
+  pricing: {
+    pricePerSquareMeter: number;
+    minimumPrice: number;
+    serviceRadiusKm: number;
+    baseLabel: string;
+    baseLatitude: number;
+    baseLongitude: number;
+  };
   initialSlots: SlotDTO[];
 }) {
   const router = useRouter();
@@ -243,7 +250,7 @@ export function BookingWizard({
           <StepShell
             icon={Home}
             title="Hvor skal vi køre hen?"
-            description={`Vi dækker en radius på ${pricing.serviceRadiusKm} km fra Give.`}
+            description={`Vi dækker en radius på ${pricing.serviceRadiusKm} km fra ${pricing.baseLabel}.`}
           >
             <div className="space-y-2">
               <Label htmlFor="addr" className="text-sm font-medium">
@@ -507,13 +514,7 @@ export function BookingWizard({
                   {isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Check className="size-4" aria-hidden />}
                   Send booking
                 </Button>
-                <p className="text-xs text-muted-foreground sm:text-right">
-                  Ved booking accepterer du{" "}
-                  <Link href="/aftalebetingelser" className="font-semibold text-[#1f6b3c] underline decoration-[#1f6b3c]/40 underline-offset-4 hover:text-[#184f2d]">
-                    Aftalebetingelserne
-                  </Link>
-                  .
-                </p>
+                <p className="text-xs text-muted-foreground sm:text-right">Ved booking accepterer du vores vilkår.</p>
               </div>
             </div>
           </StepShell>
@@ -531,7 +532,7 @@ export function BookingWizard({
             <CardDescription>Opdateres mens du udfylder felterne.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-0 divide-y divide-border/50 p-0">
-            <SummaryRow icon={MapPin} label="Serviceområde" value={`${pricing.serviceRadiusKm} km fra Give`} />
+            <SummaryRow icon={MapPin} label="Serviceområde" value={`${pricing.serviceRadiusKm} km fra ${pricing.baseLabel}`} />
             <SummaryRow
               icon={Home}
               label="Adresse"

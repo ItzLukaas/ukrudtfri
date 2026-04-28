@@ -18,15 +18,31 @@ model User {
   id           String   @id @default(cuid())
   email        String   @unique
   passwordHash String
+  avatarUrl    String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  emailChangeTokens EmailChangeToken[]
+}
+
+model EmailChangeToken {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash    String   @unique
+  newEmail     String
+  expiresAt    DateTime
+  consumedAt   DateTime?
+  createdAt    DateTime @default(now())
+
+  @@index([userId, consumedAt, expiresAt])
 }
 
 model SiteSettings {
   id String @id @default("global")
 
-  /// DKK per m² (stored as decimal, e.g. 4.50)
-  pricePerSquareMeter Decimal @default(4.5) @db.Decimal(10, 2)
+  /// DKK per m² (stored as decimal, e.g. 1.50)
+  pricePerSquareMeter Decimal @default(1.5) @db.Decimal(10, 2)
   minimumPrice        Decimal @default(300) @db.Decimal(10, 2)
 
   serviceRadiusKm Decimal @default(45) @db.Decimal(10, 2)

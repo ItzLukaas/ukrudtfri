@@ -13,7 +13,14 @@ import { Label } from "@/components/ui/label";
 export function AdminSettingsClient({ initial }: { initial: AdminDashboardPayload["settings"] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [settings, setSettings] = useState(initial);
+  const [settings, setSettings] = useState({
+    pricePerSquareMeter: String(initial.pricePerSquareMeter),
+    minimumPrice: String(initial.minimumPrice),
+    serviceRadiusKm: String(initial.serviceRadiusKm),
+    baseLabel: initial.baseLabel,
+    baseLatitude: String(initial.baseLatitude),
+    baseLongitude: String(initial.baseLongitude),
+  });
 
   return (
     <div className="space-y-6">
@@ -32,27 +39,33 @@ export function AdminSettingsClient({ initial }: { initial: AdminDashboardPayloa
             <Label htmlFor="ppm">Pris pr. m² (DKK)</Label>
             <Input
               id="ppm"
+              type="number"
+              step="0.01"
               inputMode="decimal"
-              value={String(settings.pricePerSquareMeter)}
-              onChange={(e) => setSettings((s) => ({ ...s, pricePerSquareMeter: Number(e.target.value) }))}
+              value={settings.pricePerSquareMeter}
+              onChange={(e) => setSettings((s) => ({ ...s, pricePerSquareMeter: e.target.value }))}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="minp">Minimumspris (DKK)</Label>
             <Input
               id="minp"
-              inputMode="numeric"
-              value={String(settings.minimumPrice)}
-              onChange={(e) => setSettings((s) => ({ ...s, minimumPrice: Number(e.target.value) }))}
+              type="number"
+              step="0.01"
+              inputMode="decimal"
+              value={settings.minimumPrice}
+              onChange={(e) => setSettings((s) => ({ ...s, minimumPrice: e.target.value }))}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="rad">Service radius (km)</Label>
             <Input
               id="rad"
+              type="number"
+              step="0.1"
               inputMode="decimal"
-              value={String(settings.serviceRadiusKm)}
-              onChange={(e) => setSettings((s) => ({ ...s, serviceRadiusKm: Number(e.target.value) }))}
+              value={settings.serviceRadiusKm}
+              onChange={(e) => setSettings((s) => ({ ...s, serviceRadiusKm: e.target.value }))}
             />
           </div>
           <div className="space-y-2 md:col-span-2">
@@ -67,18 +80,22 @@ export function AdminSettingsClient({ initial }: { initial: AdminDashboardPayloa
             <Label htmlFor="lat">Base latitude</Label>
             <Input
               id="lat"
+              type="number"
+              step="0.000001"
               inputMode="decimal"
-              value={String(settings.baseLatitude)}
-              onChange={(e) => setSettings((s) => ({ ...s, baseLatitude: Number(e.target.value) }))}
+              value={settings.baseLatitude}
+              onChange={(e) => setSettings((s) => ({ ...s, baseLatitude: e.target.value }))}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="lon">Base longitude</Label>
             <Input
               id="lon"
+              type="number"
+              step="0.000001"
               inputMode="decimal"
-              value={String(settings.baseLongitude)}
-              onChange={(e) => setSettings((s) => ({ ...s, baseLongitude: Number(e.target.value) }))}
+              value={settings.baseLongitude}
+              onChange={(e) => setSettings((s) => ({ ...s, baseLongitude: e.target.value }))}
             />
           </div>
 

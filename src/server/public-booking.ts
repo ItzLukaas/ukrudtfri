@@ -96,6 +96,8 @@ export async function getPublicPricing() {
     minimumPrice: Number(settings.minimumPrice),
     serviceRadiusKm: Number(settings.serviceRadiusKm),
     baseLabel: settings.baseLabel,
+    baseLatitude: settings.baseLatitude,
+    baseLongitude: settings.baseLongitude,
   };
 }
 

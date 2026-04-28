@@ -15,18 +15,40 @@ import {
   startOfWeek,
 } from "date-fns";
 import { da } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Copy } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import type { AdminDashboardPayload } from "@/lib/admin-payload-types";
 import { deleteOpenSlotAction } from "@/server/admin-actions";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { formatSlotRangeDa } from "@/lib/admin-calendar-utils";
 
 type SlotD = AdminDashboardPayload["slotsDetailed"][number];
 type BlockD = AdminDashboardPayload["blocks"][number];
+
+function AppleCalendarIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="M16.365 12.155c.017 1.796 1.577 2.395 1.594 2.404-.013.042-.249.86-.822 1.704-.495.73-1.008 1.458-1.817 1.473-.795.015-1.05-.47-1.96-.47-.91 0-1.194.456-1.944.485-.78.03-1.373-.78-1.871-1.507-1.014-1.468-1.787-4.149-.748-5.955.516-.898 1.44-1.468 2.443-1.483.765-.015 1.487.514 1.96.514.473 0 1.358-.635 2.289-.542.39.016 1.486.157 2.189 1.186-.056.034-1.307.761-1.313 2.191Zm-1.474-4.953c.414-.502.693-1.2.617-1.895-.598.024-1.321.398-1.751.9-.384.443-.72 1.153-.63 1.833.667.052 1.35-.34 1.764-.838Z" />
+    </svg>
+  );
+}
+
+function GoogleCalendarIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className={className}>
+      <path fill="#4285F4" d="M22 12.245v7.182a2.57 2.57 0 0 1-2.572 2.573H4.572A2.57 2.57 0 0 1 2 19.427V12.245h20Z" />
+      <path fill="#34A853" d="M22 9.714H2V4.572A2.57 2.57 0 0 1 4.572 2h14.856A2.57 2.57 0 0 1 22 4.572v5.142Z" />
+      <path fill="#FBBC04" d="M17.143 18.286H6.857a1.714 1.714 0 1 1 0-3.429h10.286a1.714 1.714 0 1 1 0 3.429Z" />
+      <path fill="#EA4335" d="M8.143 11.714H5.571V7.429h2.572v4.285Zm10.286 0h-2.572V7.429h2.572v4.285Z" />
+      <path
+        fill="currentColor"
+        d="M5.571 2.857a.857.857 0 0 1 1.715 0V5a.857.857 0 0 1-1.715 0V2.857Zm11.143 0a.857.857 0 1 1 1.715 0V5a.857.857 0 1 1-1.715 0V2.857Z"
+      />
+    </svg>
+  );
+}
 
 function overlapsDay(rangeStart: Date, rangeEnd: Date, day: Date) {
   const d0 = startOfDay(day);
@@ -46,7 +68,9 @@ export function AdminCalendarClient({
   slotsDetailed,
   blocks,
   icalFeedUrl,
-}: Pick<AdminDashboardPayload, "slotsDetailed" | "blocks" | "icalFeedUrl">) {
+  icalWebcalUrl,
+  icalFeedMissingEnv,
+}: Pick<AdminDashboardPayload, "slotsDetailed" | "blocks" | "icalFeedUrl" | "icalWebcalUrl" | "icalFeedMissingEnv">) {
   const router = useRouter();
   const [cursor, setCursor] = useState(() => startOfMonth(new Date()));
   const [open, setOpen] = useState(false);
@@ -73,6 +97,11 @@ export function AdminCalendarClient({
   }
 
   const weekdayLabels = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+  const hasCalendarFeed = Boolean(icalFeedUrl);
+  const appleCalendarUrl = icalWebcalUrl ?? icalFeedUrl ?? "";
+  const googleCalendarAddByUrl = icalFeedUrl
+    ? `https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=${encodeURIComponent(icalFeedUrl)}`
+    : "";
 
   return (
     <div className="space-y-6">
@@ -95,47 +124,6 @@ export function AdminCalendarClient({
           </Button>
         </div>
       </div>
-
-      {icalFeedUrl ? (
-        <Card className="border-border/60 border-primary/20 bg-primary/5">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">Synkronisér med Google eller iPhone</CardTitle>
-            <CardDescription>
-              Kopiér linket og tilføj det som <strong>abonnement på kalender</strong> (Google Kalender → Indstillinger →
-              Tilføj kalender → Fra URL). iPhone: Indstillinger → Kalender → Konti → Tilføj abonnement.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <code className="min-w-0 flex-1 truncate rounded-md border border-border/60 bg-background px-2 py-1.5 text-xs">
-              {icalFeedUrl}
-            </code>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="shrink-0 gap-1.5"
-              onClick={() => {
-                void navigator.clipboard.writeText(icalFeedUrl);
-                toast.success("Link kopieret");
-              }}
-            >
-              <Copy className="size-3.5" aria-hidden />
-              Kopiér
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="border-border/60 border-amber-500/30 bg-amber-500/5">
-          <CardHeader>
-            <CardTitle className="text-base">iCal-feed ikke aktivt</CardTitle>
-            <CardDescription>
-              Sæt <code className="rounded bg-muted px-1">ADMIN_ICAL_TOKEN</code> og{" "}
-              <code className="rounded bg-muted px-1">NEXT_PUBLIC_SITE_URL</code> i miljøvariabler for at få et
-              abonnementslink.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      )}
 
       <div className="overflow-x-auto rounded-xl border border-border/60">
         <div className="min-w-[720px]">
@@ -205,6 +193,43 @@ export function AdminCalendarClient({
             })}
           </div>
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="grid gap-2 sm:grid-cols-2">
+          <Button
+            type="button"
+            size="sm"
+            className="justify-start gap-2"
+            disabled={!hasCalendarFeed}
+            onClick={() => {
+              if (!hasCalendarFeed) return;
+              window.location.href = appleCalendarUrl;
+            }}
+          >
+            <AppleCalendarIcon />
+            Tilføj til din iOS kalender
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="justify-start gap-2"
+            disabled={!hasCalendarFeed}
+            onClick={() => {
+              if (!hasCalendarFeed) return;
+              window.location.href = googleCalendarAddByUrl;
+            }}
+          >
+            <GoogleCalendarIcon />
+            Tilføj til din Google kalender
+          </Button>
+        </div>
+        {!hasCalendarFeed ? (
+          <p className="text-xs text-muted-foreground">
+            Kalenderfeed mangler ({icalFeedMissingEnv.length > 0 ? icalFeedMissingEnv.join(", ") : "ADMIN_ICAL_TOKEN, NEXT_PUBLIC_SITE_URL"}).
+          </p>
+        ) : null}
       </div>
 
       <Sheet open={open} onOpenChange={setOpen}>

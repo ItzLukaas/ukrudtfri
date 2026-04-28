@@ -6,8 +6,9 @@ import { HeroTitle } from "@/components/hero-title";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getPublicPricing } from "@/server/public-booking";
 import { cn } from "@/lib/utils";
-import { ArrowRight, BadgeCheck, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarCheck2, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
 
 export const metadata: Metadata = {
   title: { absolute: "Certificeret plænesprøjtning i Give, Grindsted og Vejle" },
@@ -105,7 +106,9 @@ const heroImages = [
   { file: "hero-2" as const, alt: "Professionel plænepleje", variant: "secondary" as const },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const pricing = await getPublicPricing();
+
   return (
     <main className="bg-background">
       {/* Hero — split + texture + trust pills (Tailwind UI-lignende) */}
@@ -130,7 +133,7 @@ export default function HomePage() {
                 <div
                   key={file}
                   className={cn(
-                    "relative overflow-hidden rounded-lg bg-muted",
+                    "relative overflow-hidden rounded-none bg-transparent sm:rounded-lg sm:bg-muted",
                     variant === "primary" &&
                       "col-span-2 aspect-[4/3] min-h-[11.5rem] sm:min-h-[14rem] sm:aspect-[16/9] md:col-span-1 md:row-span-2 md:aspect-auto md:h-full md:min-h-[16rem] lg:min-h-[18rem]",
                     variant === "secondary" &&
@@ -142,7 +145,7 @@ export default function HomePage() {
                     alt={alt}
                     fill
                     priority={i === 0}
-                    className="object-contain p-1 sm:p-0 md:object-cover"
+                    className="object-cover p-0"
                     sizes={
                       variant === "primary"
                         ? "(max-width: 768px) 100vw, 55vw"
@@ -157,7 +160,7 @@ export default function HomePage() {
       </section>
 
       {/* Sådan foregår det */}
-      <section className="relative scroll-mt-36 border-b border-border/60 bg-muted/25" id="hvordan">
+      <section className="relative scroll-mt-36 border-b border-border/60 bg-muted/25" id="proces">
         <DotTexture className="opacity-25" />
         <div className={cn(shell, "relative")}>
           <SectionHeader
@@ -314,7 +317,7 @@ export default function HomePage() {
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-12">
             <div className="reveal-up relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted shadow-sm">
               <Image
-                src="/images/image-1.webp"
+                src="/images/image-4.webp"
                 alt="Professionel pleje af græsplæne med udstyr i brug"
                 fill
                 className="object-cover"
@@ -365,11 +368,11 @@ export default function HomePage() {
               },
               {
                 q: "Hvordan beregnes prisen?",
-                a: "Prisen beregnes ud fra arealet på din græsplæne. Vores pris er 1,5 kr. pr. m² med en minimumspris på 300 kr., så mindre opgaver stadig kan udføres ordentligt og rentabelt.",
+                a: `Prisen beregnes ud fra arealet på din græsplæne. Vores pris er ${pricing.pricePerSquareMeter.toLocaleString("da-DK")} kr. pr. m² med en minimumspris på ${pricing.minimumPrice.toLocaleString("da-DK")} kr., så mindre opgaver stadig kan udføres ordentligt og rentabelt.`,
               },
               {
                 q: "Hvilket område dækker I?",
-                a: "Vi kører fast i Give, Grindsted, Brande og Vejle og kan ofte også hjælpe i nærliggende områder. Når du sender en booking, tjekker vi hurtigt adressen og bekræfter med det samme, om du ligger inden for ruten.",
+                a: `Vi dækker som udgangspunkt op til ${pricing.serviceRadiusKm.toLocaleString("da-DK")} km fra ${pricing.baseLabel}. Når du sender en booking, tjekker vi hurtigt adressen og bekræfter med det samme, om du ligger inden for ruten.`,
               },
               {
                 q: "Bruger I godkendte produkter?",
@@ -389,46 +392,9 @@ export default function HomePage() {
               </details>
             ))}
           </div>
-          <div className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-3">
-            <Link href="/fordele" className={cn(buttonVariants({ variant: "outline" }), "min-h-11 rounded-lg px-5")}>
-              Se alle fordele
-            </Link>
-            <Link href="/proces" className={cn(buttonVariants({ variant: "outline" }), "min-h-11 rounded-lg px-5")}>
-              Se hele processen
-            </Link>
-            <Link href="/faq" className={cn(buttonVariants({ variant: "outline" }), "min-h-11 rounded-lg px-5")}>
-              Flere spørgsmål og svar
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* Hurtig booking pitch */}
-      <section className="relative border-b border-border/60 bg-background">
-        <div className={shell}>
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-primary/70" aria-hidden />
-            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Træt af ukrudt i græsplænen?</h2>
-            <p className="mx-auto mt-5 max-w-3xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Det tager under 2 minutter at booke en tid til professionel sprøjtning af din græsplæne. Vi kører ud til
-              dig på det tidspunkt, der passer dig bedst, og sprøjter din græsplæne, så den bliver ukrudtfri. Book din
-              tid på under 2 minutter allerede i dag.
-            </p>
-            <div className="mt-7 flex justify-center">
-              <Link
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "group min-h-12 rounded-lg px-8 text-base font-semibold shadow-sm transition-transform hover:-translate-y-0.5",
-                )}
-                href="/booking"
-              >
-                Book din tid nu
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }

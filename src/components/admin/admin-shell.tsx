@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  CircleUserRound,
   CalendarDays,
   CalendarRange,
   LayoutDashboard,
@@ -21,6 +22,7 @@ const nav = [
   { href: "/admin/availability", label: "Tider", icon: Timer },
   { href: "/admin/blocks", label: "Blokeringer", icon: MapPin },
   { href: "/admin/settings", label: "Priser & område", icon: Settings2 },
+  { href: "/admin/account", label: "Konto", icon: CircleUserRound },
 ] as const;
 
 function NavLinks({ className }: { className?: string }) {

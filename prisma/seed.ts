@@ -19,16 +19,16 @@ async function main() {
     where: { id: "global" },
     create: {
       id: "global",
-      pricePerSquareMeter: 4.5,
+      pricePerSquareMeter: 1.5,
       minimumPrice: 300,
       serviceRadiusKm: 45,
-      baseLabel: "Give, Danmark",
+      baseLabel: "Hyldevang 44, Give",
       baseLatitude: 55.8445,
       baseLongitude: 9.2386,
     },
     update: {
       // Nulstil base-koordinater ved seed hvis de er blevet gemt forkert i admin (pris/radius ændres ikke her).
-      baseLabel: "Give, Danmark",
+      baseLabel: "Hyldevang 44, Give",
       baseLatitude: 55.8445,
       baseLongitude: 9.2386,
     },

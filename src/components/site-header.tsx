@@ -10,43 +10,45 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CONTACT_EMAIL } from "@/lib/site-config";
 
-export function SiteHeader() {
+export function SiteHeader({ baseLabel, baseLatitude, baseLongitude }: { baseLabel: string; baseLatitude: number; baseLongitude: number }) {
   const [topbarOpen, setTopbarOpen] = useState(true);
+  const topbarAddress = baseLabel === "Give, Danmark" ? "Hyldevang 44, Give" : baseLabel;
+  const mapHref = `https://maps.google.com/?q=${encodeURIComponent(`${baseLatitude},${baseLongitude} (${topbarAddress})`)}`;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
       {topbarOpen ? (
         <div className="relative border-b border-[#174430] bg-[#082e1e]">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-2 text-xs text-[#d7e3da] sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:text-sm">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-2 pr-12 text-xs text-[#d7e3da] sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:pr-14 sm:text-sm">
           <Link
             href="/kontakt#kontakt-form"
             className="min-w-0 text-pretty leading-snug text-[#d7e3da] transition-colors hover:text-white"
           >
-            Kontakt os for at få sprøjtet din græsplæne
+            Book sprøjtning af din græsplæne på under 2 min
           </Link>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 sm:shrink-0">
+          <div className="flex items-center gap-x-2 text-[11px] sm:shrink-0 sm:gap-x-4 sm:text-sm">
             <a
               href="tel:+4541820046"
-              className="inline-flex items-center gap-1.5 text-[#d7e3da] transition-colors hover:text-white"
+              className="inline-flex min-h-10 items-center gap-1 text-[#d7e3da] transition-colors hover:text-white"
             >
               <Phone className="size-3.5 shrink-0 text-[#d7e3da]" aria-hidden />
               +45 41 82 00 46
             </a>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="inline-flex min-w-0 items-center gap-1.5 text-[#d7e3da] transition-colors hover:text-white"
+              className="inline-flex min-h-10 min-w-0 items-center gap-1 whitespace-nowrap text-[#d7e3da] transition-colors hover:text-white"
             >
               <Mail className="size-3.5 shrink-0 text-[#d7e3da]" aria-hidden />
               <span className="truncate">{CONTACT_EMAIL}</span>
             </a>
             <a
-              href="https://maps.google.com/?q=Hyldevang+44,+Give,+Denmark"
+              href={mapHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-w-0 items-center gap-1.5 text-[#d7e3da] transition-colors hover:text-white"
+              className="inline-flex min-h-10 min-w-0 items-center gap-1 whitespace-nowrap text-[#d7e3da] transition-colors hover:text-white"
             >
               <MapPin className="size-3.5 shrink-0 text-[#d7e3da]" aria-hidden />
-              <span className="truncate">Hyldevang 44, Give</span>
+              <span className="truncate">{topbarAddress}</span>
             </a>
           </div>
         </div>
@@ -61,10 +63,10 @@ export function SiteHeader() {
         </div>
       ) : null}
       <div className="mx-auto flex w-full max-w-6xl items-center gap-2 px-4 py-3 sm:gap-3 md:gap-4">
-        <Link href="/" className="min-w-0 shrink-0" aria-label="LawnGuard">
+        <Link href="/" className="min-w-0 shrink-0" aria-label="Ukrudtfri">
           <Image
             src="/images/logo.png"
-            alt="LawnGuard"
+            alt="Ukrudtfri"
             width={280}
             height={76}
             priority
@@ -79,11 +81,11 @@ export function SiteHeader() {
           {(
             [
               ["/", "Hjem"],
-              ["/fordele", "Fordele"],
-              ["/proces", "Proces"],
-              ["/om-os", "Om os"],
+              ["/#fordele", "Fordele"],
+              ["/#proces", "Proces"],
+              ["/#om-os", "Om os"],
               ["/kontakt", "Kontakt os"],
-              ["/faq", "FAQ"],
+              ["/#faq", "FAQ"],
             ] as const
           ).map(([href, label], i) => (
             <Fragment key={href}>

@@ -634,3 +634,58 @@ export async function sendBookingReminderEmail(payload: BookingReminderMailPaylo
 
   return { skipped: false as const };
 }
+
+export async function sendAdminEmailChangeVerificationEmail(payload: {
+  to: string;
+  currentEmail: string;
+  token: string;
+  expiresAt: Date;
+}) {
+  const from = process.env.EMAIL_FROM ?? "Ukrudtfri <booking@ukrudtfri.dk>";
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return { skipped: true as const };
+
+  const resend = new Resend(apiKey);
+  const verifyUrl = `${SITE_URL}/admin/account/verify-email?token=${encodeURIComponent(payload.token)}`;
+  const expiresLabel = payload.expiresAt.toLocaleString("da-DK", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+  const subject = "Bekraeft din nye email hos Ukrudtfri";
+  const text = [
+    `Hej,`,
+    ``,
+    `Du har bedt om at skifte admin-email fra ${payload.currentEmail} til ${payload.to}.`,
+    `Klik for at bekraefte den nye email: ${verifyUrl}`,
+    ``,
+    `Linket udloeber: ${expiresLabel}`,
+    `Hvis du ikke selv har anmodet om skiftet, kan du ignorere denne mail.`,
+    ``,
+    `${SITE_BRAND}`,
+  ].join("\n");
+
+  const bodyHtml = `
+    <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:${COL.text};font-family:${FONT};">
+      Du har bedt om at skifte admin-email fra <strong>${escapeHtml(payload.currentEmail)}</strong> til <strong>${escapeHtml(payload.to)}</strong>.
+    </p>
+    ${buttonPrimary(escapeHtml(verifyUrl), "Bekraeft ny email", "mail")}
+    <p style="margin:14px 0 0;font-size:13px;line-height:1.55;color:${COL.muted};font-family:${FONT};">
+      Linket udloeber <strong>${escapeHtml(expiresLabel)}</strong>. Hvis du ikke selv har anmodet om skiftet, kan du ignorere denne mail.
+    </p>
+  `;
+  const html = simpleCustomerEmail({
+    heading: "Bekraeft dit emailskift",
+    lead: "Af sikkerhedsgrunde skal ny email verificeres.",
+    bodyHtml,
+    recipientEmail: payload.to,
+  });
+
+  await resend.emails.send({
+    from,
+    to: payload.to,
+    subject,
+    text,
+    html,
+  });
+  return { skipped: false as const };
+}
