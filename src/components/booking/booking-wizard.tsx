@@ -123,6 +123,12 @@ export function BookingWizard({
     () => initialSlots.find((s) => s.id === selectedSlotId) ?? null,
     [initialSlots, selectedSlotId],
   );
+  const addressQuery = [addressLine, postalCode, city].filter(Boolean).join(", ");
+  const mapEmbedUrl = geo
+    ? `https://maps.google.com/maps?q=${encodeURIComponent(`${geo.latitude},${geo.longitude}`)}&t=k&z=18&output=embed`
+    : addressQuery
+      ? `https://maps.google.com/maps?q=${encodeURIComponent(addressQuery)}&t=k&z=17&output=embed`
+      : null;
 
   const progressPct = ((step - 1) / (STEPS.length - 1)) * 100;
 
@@ -302,6 +308,20 @@ export function BookingWizard({
                 </div>
               </div>
             </div>
+            {mapEmbedUrl ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Adresse preview</p>
+                <div className="overflow-hidden rounded-xl border border-border/60 bg-muted/20">
+                  <iframe
+                    title="Kort over adresse"
+                    src={mapEmbedUrl}
+                    loading="lazy"
+                    className="h-52 w-full border-0"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              </div>
+            ) : null}
             <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-end">
               <Button className="h-11 gap-2 px-6" onClick={onValidateAddress} disabled={isPending}>
                 {isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <ChevronRight className="size-4" aria-hidden />}
