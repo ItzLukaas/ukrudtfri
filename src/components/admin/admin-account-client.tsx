@@ -40,9 +40,13 @@ export function AdminAccountClient({ initial }: { initial: { email: string; avat
             disabled={pending}
             onClick={() =>
               startTransition(async () => {
-                const res = await requestAdminEmailChangeAction({ newEmail: email });
-                if (!res.ok) toast.error(res.message);
-                else toast.success("Bekraeftelsesmail sendt.");
+                try {
+                  const res = await requestAdminEmailChangeAction({ newEmail: email });
+                  if (!res.ok) toast.error(res.message);
+                  else toast.success("Bekraeftelsesmail sendt.");
+                } catch {
+                  toast.error("Kunne ikke sende bekræftelsesmail.");
+                }
               })
             }
           >
@@ -77,12 +81,16 @@ export function AdminAccountClient({ initial }: { initial: { email: string; avat
             disabled={pending}
             onClick={() =>
               startTransition(async () => {
-                const res = await changeAdminPasswordAction({ currentPassword, newPassword });
-                if (!res.ok) toast.error(res.message);
-                else {
-                  setCurrentPassword("");
-                  setNewPassword("");
-                  toast.success("Adgangskode opdateret.");
+                try {
+                  const res = await changeAdminPasswordAction({ currentPassword, newPassword });
+                  if (!res.ok) toast.error(res.message);
+                  else {
+                    setCurrentPassword("");
+                    setNewPassword("");
+                    toast.success("Adgangskode opdateret.");
+                  }
+                } catch {
+                  toast.error("Kunne ikke opdatere adgangskode.");
                 }
               })
             }
@@ -106,9 +114,13 @@ export function AdminAccountClient({ initial }: { initial: { email: string; avat
             disabled={pending}
             onClick={() =>
               startTransition(async () => {
-                const res = await updateAdminAvatarAction({ avatarUrl });
-                if (!res.ok) toast.error(res.message);
-                else toast.success("Avatar opdateret.");
+                try {
+                  const res = await updateAdminAvatarAction({ avatarUrl });
+                  if (!res.ok) toast.error(res.message);
+                  else toast.success("Avatar opdateret.");
+                } catch {
+                  toast.error("Kunne ikke opdatere avatar.");
+                }
               })
             }
           >

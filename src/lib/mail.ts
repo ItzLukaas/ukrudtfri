@@ -641,12 +641,45 @@ export async function sendAdminEmailChangeVerificationEmail(payload: {
   token: string;
   expiresAt: Date;
 }) {
-  const from = process.env.EMAIL_FROM ?? "Ukrudtfri <booking@ukrudtfri.dk>";
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return { skipped: true as const };
+  const from = process.env.EMAIL_FROM?.trim();
+  if (!from) {
+    return {
+      ok: false as const,
+      code: "MISSING_EMAIL_FROM" as const,
+      message: "Email afsender er ikke konfigureret (EMAIL_FROM).",
+    };
+  }
 
-  const resend = new Resend(apiKey);
-  const verifyUrl = `${SITE_URL}/admin/account/verify-email?token=${encodeURIComponent(payload.token)}`;
+  const fromMatch = from.match(/<([^>\s]+@[^>\s]+)>/);
+  if (!fromMatch) {
+    return {
+      ok: false as const,
+      code: "INVALID_EMAIL_FROM" as const,
+      message: "EMAIL_FROM har ugyldigt format. Brug fx: Ukrudtfri <booking@dit-domaene.dk>.",
+    };
+  }
+
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  if (!apiKey) {
+    return {
+      ok: false as const,
+      code: "MISSING_RESEND_API_KEY" as const,
+      message: "Mail-tjenesten er ikke konfigureret (RESEND_API_KEY mangler).",
+    };
+  }
+
+  let verifyUrl: string;
+  try {
+    verifyUrl = new URL("/admin/account/verify-email", SITE_URL).toString();
+  } catch {
+    return {
+      ok: false as const,
+      code: "INVALID_SITE_URL" as const,
+      message: "Site URL er ugyldig. Tjek NEXT_PUBLIC_SITE_URL.",
+    };
+  }
+  verifyUrl = `${verifyUrl}?token=${encodeURIComponent(payload.token)}`;
+
   const expiresLabel = payload.expiresAt.toLocaleString("da-DK", {
     dateStyle: "short",
     timeStyle: "short",
@@ -680,12 +713,65 @@ export async function sendAdminEmailChangeVerificationEmail(payload: {
     recipientEmail: payload.to,
   });
 
-  await resend.emails.send({
-    from,
-    to: payload.to,
-    subject,
-    text,
-    html,
-  });
-  return { skipped: false as const };
+  try {
+    const resend = new Resend(apiKey);
+    const result = await resend.emails.send({
+      from,
+      to: payload.to,
+      subject,
+      text,
+      html,
+    });
+
+    if (result.error) {
+      const resendMessage =
+        typeof result.error.message === "string" && result.error.message.trim().length > 0
+          ? result.error.message
+          : "Ukendt fejl fra mailtjenesten.";
+      const lower = resendMessage.toLowerCase();
+      let message = `Mail kunne ikke sendes: ${resendMessage}`;
+
+      if (lower.includes("domain") || lower.includes("from")) {
+        message = "Mail kunne ikke sendes: afsenderdomænet i EMAIL_FROM er ikke verificeret hos Resend.";
+      } else if (lower.includes("api key") || lower.includes("unauthorized")) {
+        message = "Mail kunne ikke sendes: RESEND_API_KEY er ugyldig eller mangler adgang.";
+      }
+
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[email] Resend rejected admin email change verification mail", {
+          code: result.error.name,
+          message: resendMessage,
+          to: payload.to,
+          fromDomain: fromMatch[1]?.split("@")[1] ?? null,
+        });
+      } else {
+        console.error("[email] Resend rejected admin email change verification mail", {
+          code: result.error.name,
+        });
+      }
+
+      return {
+        ok: false as const,
+        code: "RESEND_SEND_FAILED" as const,
+        message,
+      };
+    }
+
+    return { ok: true as const };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Ukendt fejl";
+    if (process.env.NODE_ENV !== "production") {
+      console.error("[email] Failed to send admin email change verification mail", {
+        message: errorMessage,
+        to: payload.to,
+      });
+    } else {
+      console.error("[email] Failed to send admin email change verification mail");
+    }
+    return {
+      ok: false as const,
+      code: "RESEND_REQUEST_FAILED" as const,
+      message: `Mail kunne ikke sendes: ${errorMessage}`,
+    };
+  }
 }
