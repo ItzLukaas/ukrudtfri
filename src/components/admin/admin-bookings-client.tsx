@@ -33,7 +33,9 @@ function statusLabel(status: BookingStatus) {
   return "Annulleret";
 }
 
-export function AdminBookingsClient({ initial }: { initial: AdminDashboardPayload }) {
+export function AdminBookingsClient({
+  initial,
+}: { initial: Pick<AdminDashboardPayload, "bookings" | "emailTemplates"> }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [templateByBooking, setTemplateByBooking] = useState<Record<string, string>>({});

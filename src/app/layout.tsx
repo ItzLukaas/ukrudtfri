@@ -3,6 +3,7 @@ import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/app-providers";
 import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
+import { DEFAULT_SEO_DESCRIPTION, DEFAULT_SEO_TITLE, SITE_KEYWORDS, defaultOpenGraph, defaultTwitter } from "@/lib/seo";
 
 const dmSans = DM_Sans({
   variable: "--font-lw",
@@ -26,28 +27,21 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/images/logo.png",
     shortcut: "/images/logo.png",
     apple: "/images/logo.png",
   },
   title: {
-    default: SITE_BRAND,
-    template: `%s · ${SITE_BRAND}`,
+    default: DEFAULT_SEO_TITLE,
+    template: `%s | ${SITE_BRAND}`,
   },
-  description:
-    "Professionel sprøjtning af græsplæner i Give, Grindsted, Brande og omegn. Book tid online til plænepleje med godkendte produkter.",
+  description: DEFAULT_SEO_DESCRIPTION,
   applicationName: SITE_BRAND,
-  keywords: [
-    "græsplæne",
-    "plænesprøjtning",
-    "ukrudt",
-    "Give",
-    "Grindsted",
-    "Brande",
-    "plænepleje",
-    "Ukrudtfri",
-  ],
+  keywords: [...SITE_KEYWORDS],
   authors: [{ name: SITE_BRAND }],
   creator: SITE_BRAND,
   formatDetection: {
@@ -55,21 +49,8 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  openGraph: {
-    type: "website",
-    locale: "da_DK",
-    siteName: SITE_BRAND,
-    title: `${SITE_BRAND} · Professionel græsplænesprøjtning`,
-    description:
-      "Book tid til sprøjtning af din græsplæne i Give, Grindsted og Brande. Certificeret udførelse og godkendte produkter.",
-    url: SITE_URL,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE_BRAND} · Professionel græsplænesprøjtning`,
-    description:
-      "Book tid til sprøjtning af din græsplæne i Give, Grindsted og Brande. Certificeret udførelse og godkendte produkter.",
-  },
+  openGraph: defaultOpenGraph,
+  twitter: defaultTwitter,
   robots: {
     index: true,
     follow: true,

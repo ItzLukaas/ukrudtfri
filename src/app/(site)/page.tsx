@@ -10,15 +10,15 @@ import { cn } from "@/lib/utils";
 import { ArrowRight, BadgeCheck, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: { absolute: `${SITE_BRAND} · Græsplænesprøjtning i Give, Grindsted og Brande` },
+  title: { absolute: "Certificeret plænesprøjtning i Give, Grindsted og Vejle" },
   description:
-    "Få en flot, tæt og grøn græsplæne uden bøvl. Vi tilbyder professionel sprøjtning i Give, Grindsted og Brande med godkendte produkter og sprøjtecertifikat.",
+    "Få en tæt og grøn græsplæne med certificeret ukrudtsbekæmpelse. Vi hjælper i Give, Grindsted, Brande og Vejle med godkendte midler og lokal service.",
   alternates: { canonical: SITE_URL },
   openGraph: {
     url: SITE_URL,
-    title: `${SITE_BRAND} · Græsplænesprøjtning i Give, Grindsted og Brande`,
+    title: "Certificeret plænesprøjtning i Give, Grindsted og Vejle",
     description:
-      "Få en flot, tæt og grøn græsplæne uden bøvl. Vi tilbyder professionel sprøjtning i Give, Grindsted og Brande med godkendte produkter og sprøjtecertifikat.",
+      "Få en tæt og grøn græsplæne med certificeret ukrudtsbekæmpelse. Vi hjælper i Give, Grindsted, Brande og Vejle med godkendte midler og lokal service.",
   },
 };
 
@@ -120,7 +120,7 @@ export default function HomePage() {
           <div className="mx-auto w-full max-w-xl px-1 text-center lg:mx-0 lg:px-0 lg:text-left">
             <HeroTitle />
             <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mx-0 lg:text-xl">
-              Vi gør din græsplæne ukrudtfri og flot igen.
+              Vi gør din græsplæne ukrudtfri og flot igen i Give, Grindsted, Brande, Vejle og nærliggende byer.
             </p>
             <PrimaryCtas className="mx-auto mt-7 w-full max-w-[22rem] justify-center sm:mt-8 sm:max-w-none lg:mx-0 lg:justify-start" />
           </div>
@@ -151,33 +151,6 @@ export default function HomePage() {
                   />
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Hurtig booking pitch */}
-      <section className="relative border-b border-border/60 bg-background">
-        <div className={shell}>
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-primary/70" aria-hidden />
-            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Træt af ukrudt i græsplænen?</h2>
-            <p className="mx-auto mt-5 max-w-3xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Det tager under 2 minutter at booke en tid til professionel sprøjtning af din græsplæne. Vi kører ud til
-              dig på det tidspunkt, der passer dig bedst, og sprøjter din græsplæne, så den bliver ukrudtfri. Book din
-              tid på under 2 minutter allerede i dag.
-            </p>
-            <div className="mt-7 flex justify-center">
-              <Link
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "group min-h-12 rounded-lg px-8 text-base font-semibold shadow-sm transition-transform hover:-translate-y-0.5",
-                )}
-                href="/booking"
-              >
-                Book din tid nu
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
-              </Link>
             </div>
           </div>
         </div>
@@ -415,6 +388,44 @@ export default function HomePage() {
                 <p className="mt-3 pr-8 text-sm leading-relaxed text-muted-foreground sm:text-base">{item.a}</p>
               </details>
             ))}
+          </div>
+          <div className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-3">
+            <Link href="/fordele" className={cn(buttonVariants({ variant: "outline" }), "min-h-11 rounded-lg px-5")}>
+              Se alle fordele
+            </Link>
+            <Link href="/proces" className={cn(buttonVariants({ variant: "outline" }), "min-h-11 rounded-lg px-5")}>
+              Se hele processen
+            </Link>
+            <Link href="/faq" className={cn(buttonVariants({ variant: "outline" }), "min-h-11 rounded-lg px-5")}>
+              Flere spørgsmål og svar
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Hurtig booking pitch */}
+      <section className="relative border-b border-border/60 bg-background">
+        <div className={shell}>
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-primary/70" aria-hidden />
+            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Træt af ukrudt i græsplænen?</h2>
+            <p className="mx-auto mt-5 max-w-3xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Det tager under 2 minutter at booke en tid til professionel sprøjtning af din græsplæne. Vi kører ud til
+              dig på det tidspunkt, der passer dig bedst, og sprøjter din græsplæne, så den bliver ukrudtfri. Book din
+              tid på under 2 minutter allerede i dag.
+            </p>
+            <div className="mt-7 flex justify-center">
+              <Link
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "group min-h-12 rounded-lg px-8 text-base font-semibold shadow-sm transition-transform hover:-translate-y-0.5",
+                )}
+                href="/booking"
+              >
+                Book din tid nu
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

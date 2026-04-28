@@ -5,15 +5,15 @@ import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
 import { getAvailableSlotsForPublic, getPublicPricing } from "@/server/public-booking";
 
 export const metadata: Metadata = {
-  title: "Book tid",
+  title: "Book tid til certificeret plænesprøjtning",
   description:
-    "Book online: tjek serviceområde, se pris ud fra areal, vælg ledig tid og bekræft. Græsplænesprøjtning i Give, Grindsted og Brande.",
+    "Book online på få minutter: tjek område, se pris efter areal og vælg ledig tid. Certificeret plænesprøjtning i Give, Grindsted, Brande og Vejle.",
   alternates: { canonical: `${SITE_URL}/booking` },
   openGraph: {
     url: `${SITE_URL}/booking`,
-    title: `Book tid · ${SITE_BRAND}`,
+    title: `Book tid til certificeret plænesprøjtning · ${SITE_BRAND}`,
     description:
-      "Book online: tjek serviceområde, se pris ud fra areal, vælg ledig tid og bekræft. Græsplænesprøjtning i Give, Grindsted og Brande.",
+      "Book online på få minutter: tjek område, se pris efter areal og vælg ledig tid. Certificeret plænesprøjtning i Give, Grindsted, Brande og Vejle.",
   },
 };
 

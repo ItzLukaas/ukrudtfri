@@ -1,9 +1,9 @@
 import { AdminBookingsClient } from "@/components/admin/admin-bookings-client";
-import { getAdminDashboardPayload } from "@/server/admin-data";
+import { getAdminBookingsData } from "@/server/admin-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminBookingsPage() {
-  const data = await getAdminDashboardPayload();
+  const data = await getAdminBookingsData();
   return <AdminBookingsClient initial={data} />;
 }

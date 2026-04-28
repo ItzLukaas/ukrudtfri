@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Mail } from "lucide-react";
 import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,13 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Kontakt",
-  description: `Kontakt ${SITE_BRAND} for spørgsmål om plænepleje eller for at få hjælp til din næste behandling.`,
+  title: "Kontakt os om certificeret plænesprøjtning",
+  description: `Kontakt ${SITE_BRAND} for svar om priser, dækning og behandling. Vi hjælper i Give, Grindsted, Brande og Vejle med certificeret plænesprøjtning.`,
   alternates: { canonical: `${SITE_URL}/kontakt` },
   openGraph: {
     url: `${SITE_URL}/kontakt`,
-    title: `Kontakt · ${SITE_BRAND}`,
-    description: `Kontakt ${SITE_BRAND} for spørgsmål om plænepleje eller for at få hjælp til din næste behandling.`,
+    title: `Kontakt os om certificeret plænesprøjtning · ${SITE_BRAND}`,
+    description: `Kontakt ${SITE_BRAND} for svar om priser, dækning og behandling. Vi hjælper i Give, Grindsted, Brande og Vejle med certificeret plænesprøjtning.`,
   },
 };
 

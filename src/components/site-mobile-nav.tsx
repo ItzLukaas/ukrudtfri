@@ -11,11 +11,11 @@ import { cn } from "@/lib/utils";
 
 const SECTION_LINKS = [
   ["/", "Hjem"],
-  ["/#fordele", "Fordele"],
-  ["/#hvordan", "Proces"],
-  ["/#om-os", "Om os"],
-  ["/kontakt", "Kontakt"],
-  ["/#faq", "FAQ"],
+  ["/fordele", "Fordele"],
+  ["/proces", "Proces"],
+  ["/om-os", "Om os"],
+  ["/kontakt", "Kontakt os"],
+  ["/faq", "FAQ"],
 ] as const;
 
 const navLinkClass =

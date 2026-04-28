@@ -17,7 +17,7 @@ function statusDa(s: string) {
   return s;
 }
 
-export function AdminOverviewClient({ data }: { data: AdminDashboardPayload }) {
+export function AdminOverviewClient({ data }: { data: Pick<AdminDashboardPayload, "stats"> }) {
   const { stats } = data;
 
   return (

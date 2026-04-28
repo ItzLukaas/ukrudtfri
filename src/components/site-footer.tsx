@@ -40,17 +40,23 @@ export async function SiteFooter() {
           <div className="space-y-4 md:self-start md:justify-self-start">
             <p className="text-sm font-semibold text-[#f3f8f4]">Navigation</p>
             <div className="flex flex-col items-center gap-2 text-sm text-[#c6d2ca] md:items-start">
-              <Link href="/#fordele" className="transition-colors hover:text-white">
+              <Link href="/fordele" className="transition-colors hover:text-white">
                 Fordele
               </Link>
-              <Link href="/#om-os" className="transition-colors hover:text-white">
+              <Link href="/proces" className="transition-colors hover:text-white">
+                Proces
+              </Link>
+              <Link href="/om-os" className="transition-colors hover:text-white">
                 Om os
               </Link>
               <Link href="/kontakt" className="transition-colors hover:text-white">
-                Kontakt
+                Kontakt os
+              </Link>
+              <Link href="/faq" className="transition-colors hover:text-white">
+                FAQ
               </Link>
               <Link href="/booking" className="transition-colors hover:text-white">
-                Book tid
+                Book din tid
               </Link>
             </div>
           </div>

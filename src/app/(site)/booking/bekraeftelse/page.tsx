@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { da } from "date-fns/locale";
 
 export const metadata: Metadata = {
-  title: "Booking modtaget",
+  title: "Booking modtaget til certificeret plænesprøjtning",
   robots: { index: false, follow: true },
 };
 

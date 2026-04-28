@@ -5,8 +5,9 @@ import remarkGfm from "remark-gfm";
 import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Aftalebetingelser",
-  description: "Aftalebetingelser for LawnGuard.",
+  title: "Aftalebetingelser for certificeret plæneservice",
+  description:
+    "Læs aftalebetingelser for certificeret plænesprøjtning i Give, Grindsted, Brande og Vejle, inkl. booking, afbestilling, priser og udførelse.",
   alternates: { canonical: `${SITE_URL}/aftalebetingelser` },
 };
 

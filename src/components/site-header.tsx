@@ -54,7 +54,7 @@ export function SiteHeader() {
             type="button"
             onClick={() => setTopbarOpen(false)}
             aria-label="Luk topbar"
-            className="absolute right-2 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-full text-[#d7e3da]/90 transition-colors hover:text-white sm:right-3"
+            className="absolute right-2 top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-full text-[#d7e3da]/90 transition-colors hover:bg-white/10 hover:text-white sm:right-3"
           >
             <X className="size-3.5" aria-hidden />
           </button>
@@ -79,11 +79,11 @@ export function SiteHeader() {
           {(
             [
               ["/", "Hjem"],
-              ["/#fordele", "Fordele"],
-              ["/#hvordan", "Proces"],
-              ["/#om-os", "Om os"],
-              ["/kontakt", "Kontakt"],
-              ["/#faq", "FAQ"],
+              ["/fordele", "Fordele"],
+              ["/proces", "Proces"],
+              ["/om-os", "Om os"],
+              ["/kontakt", "Kontakt os"],
+              ["/faq", "FAQ"],
             ] as const
           ).map(([href, label], i) => (
             <Fragment key={href}>

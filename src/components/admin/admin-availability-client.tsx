@@ -28,7 +28,9 @@ const weekdayOptions = [
   { v: 0, label: "Søn" },
 ] as const;
 
-export function AdminAvailabilityClient({ initial }: { initial: AdminDashboardPayload }) {
+export function AdminAvailabilityClient({
+  initial,
+}: { initial: Pick<AdminDashboardPayload, "uiDefaults" | "slots"> }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
