@@ -1,0 +1,21 @@
+name: Booking Reminders Cron
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  trigger-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call booking reminders endpoint
+        env:
+          BOOKING_REMINDER_URL: ${{ secrets.BOOKING_REMINDER_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$BOOKING_REMINDER_URL"
+          test -n "$CRON_SECRET"
+          curl --fail --show-error --silent \
+            -X POST "$BOOKING_REMINDER_URL" \
+            -H "Authorization: Bearer $CRON_SECRET"
