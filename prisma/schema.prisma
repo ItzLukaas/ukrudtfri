@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model SiteSettings {
+  id String @id @default("global")
+
+  /// DKK per m² (stored as decimal, e.g. 4.50)
+  pricePerSquareMeter Decimal @default(4.5) @db.Decimal(10, 2)
+  minimumPrice        Decimal @default(300) @db.Decimal(10, 2)
+
+  serviceRadiusKm Decimal @default(45) @db.Decimal(10, 2)
+
+  baseLabel     String  @default("Give, Danmark")
+  baseLatitude  Float
+  baseLongitude Float
+
+  /// Vises/redigeres i admin — bruges på offentlig side/footer
+  termsPolicyText        String @default("") @db.Text
+  cancellationPolicyText String @default("") @db.Text
+  privacyPolicyText      String @default("") @db.Text
+  /// Ekstra HTML i bunden af kundemails (admin-kontrolleret)
+  mailFooterExtraHtml    String @default("") @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Skabeloner til manuelle mails fra admin (slug er stabil nøgle)
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  subject   String
+  bodyHtml  String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Bookable time window created by admin
+model OpenSlot {
+  id        String   @id @default(cuid())
+  startsAt  DateTime
+  endsAt    DateTime
+  createdAt DateTime @default(now())
+
+  booking Booking?
+}
+
+/// Admin-defined unavailability (overlapping open slots are hidden)
+model BlockedWindow {
+  id        String   @id @default(cuid())
+  startsAt  DateTime
+  endsAt    DateTime
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model Booking {
+  id String @id @default(cuid())
+
+  slotId String   @unique
+  slot   OpenSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  addressLine String
+  postalCode  String
+  city        String
+
+  latitude  Float?
+  longitude Float?
+
+  squareMeters Int
+  totalPrice   Decimal @db.Decimal(10, 2)
+
+  status BookingStatus @default(PENDING)
+  remindedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
