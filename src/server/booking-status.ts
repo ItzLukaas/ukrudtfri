@@ -1,9 +1,8 @@
 "use server";
 
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
 import { BookingStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { formatBookingSlotRangeDa } from "@/lib/booking-datetime";
 import { sendBookingReminderEmail, sendBookingStatusEmail } from "@/lib/mail";
 
 export async function setBookingStatus(
@@ -27,7 +26,7 @@ export async function setBookingStatus(
 
   const notifyCustomer = options?.notifyCustomer !== false;
   if (notifyCustomer) {
-    const whenLabel = format(updated.slot.startsAt, "PPP 'kl.' p", { locale: da });
+    const whenLabel = formatBookingSlotRangeDa(updated.slot.startsAt, updated.slot.endsAt);
     const addressLabel = `${updated.addressLine}, ${updated.postalCode} ${updated.city}`;
     await sendBookingStatusEmail({
       to: updated.customerEmail,
@@ -67,7 +66,7 @@ export async function sendDueBookingReminders(now = new Date()) {
   });
 
   for (const booking of due) {
-    const whenLabel = format(booking.slot.startsAt, "PPP 'kl.' p", { locale: da });
+    const whenLabel = formatBookingSlotRangeDa(booking.slot.startsAt, booking.slot.endsAt);
     const addressLabel = `${booking.addressLine}, ${booking.postalCode} ${booking.city}`;
     await sendBookingReminderEmail({
       to: booking.customerEmail,

@@ -10,11 +10,15 @@ import { cn } from "@/lib/utils";
 import { getPublicPricing } from "@/server/public-booking";
 
 type CityServicePageProps = {
-  config: CityPageConfig;
+  config: CityPageConfig | undefined;
   description: string;
 };
 
 export async function CityServicePage({ config, description }: CityServicePageProps) {
+  if (!config) {
+    throw new Error("Missing city page config");
+  }
+
   const pricing = await getPublicPricing();
   const matchesExpectedBaseline = pricing.pricePerSquareMeter === 1.5 && pricing.minimumPrice === 300;
   const path = `/byer/${config.slug}`;

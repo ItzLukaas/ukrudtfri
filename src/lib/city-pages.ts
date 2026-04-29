@@ -445,3 +445,13 @@ export const CITY_PAGE_SLUGS = CITY_PAGE_CONFIGS.map((city) => city.slug);
 export function getCityPageConfigBySlug(slug: string) {
   return CITY_PAGE_CONFIGS.find((city) => city.slug === slug);
 }
+
+export function requireCityPageConfigBySlug(slug: string): CityPageConfig {
+  const cityConfig = getCityPageConfigBySlug(slug);
+
+  if (!cityConfig) {
+    throw new Error(`Missing city page config for ${slug}`);
+  }
+
+  return cityConfig;
+}

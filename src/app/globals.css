@@ -208,3 +208,10 @@
   outline: 2px solid color-mix(in srgb, var(--primary) 45%, transparent);
   outline-offset: -2px;
 }
+
+.toaster-vars {
+  --normal-bg: var(--popover);
+  --normal-text: var(--popover-foreground);
+  --normal-border: var(--border);
+  --border-radius: var(--radius);
+}

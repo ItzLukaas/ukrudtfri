@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { CityPageConfig } from "@/lib/city-pages";
-import { CONTACT_EMAIL, SITE_BRAND, SITE_URL } from "@/lib/site-config";
+import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
 
 export const SERVICE_CITIES = [
   "Give",
@@ -80,7 +80,6 @@ export const localBusinessJsonLd = {
   url: SITE_URL,
   description: DEFAULT_SEO_DESCRIPTION,
   telephone: "+4541820046",
-  email: CONTACT_EMAIL,
   address: {
     "@type": "PostalAddress",
     streetAddress: "Hyldevang 44",
@@ -123,7 +122,6 @@ export function buildCityServiceJsonLd(city: string, path: string, description: 
       name: SITE_BRAND,
       url: SITE_URL,
       telephone: "+4541820046",
-      email: CONTACT_EMAIL,
     },
     url: pageUrl,
     inLanguage: "da-DK",

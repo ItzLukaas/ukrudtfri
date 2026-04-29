@@ -10,6 +10,7 @@ import type { AdminDashboardPayload } from "@/lib/admin-payload-types";
 import {
   cancelBookingAction,
   cancelBookingWithTemplateAction,
+  sendCorrectedConfirmationToBookingAction,
   sendTemplateToBookingAction,
   updateBookingStatusAction,
 } from "@/server/admin-actions";
@@ -159,6 +160,22 @@ export function AdminBookingsClient({
                           >
                             Annullér
                           </Button>
+                          {b.status === "CONFIRMED" ? (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              disabled={isPending}
+                              onClick={() => {
+                                startTransition(async () => {
+                                  const res = await sendCorrectedConfirmationToBookingAction(b.id);
+                                  if (!res.ok) toast.error(res.message);
+                                  else toast.success("Korrigeret bekræftelse sendt");
+                                });
+                              }}
+                            >
+                              Send korr. bekræftelse
+                            </Button>
+                          ) : null}
                         </div>
                         {templates.length > 0 ? (
                           <div className="flex flex-col gap-1 rounded-md border border-border/60 bg-muted/20 p-2">

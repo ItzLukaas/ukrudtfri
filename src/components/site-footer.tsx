@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { CONTACT_EMAIL, SITE_BRAND } from "@/lib/site-config";
+import { SITE_BRAND } from "@/lib/site-config";
 import { getPublicPricing } from "@/server/public-booking";
 
 export async function SiteFooter() {
@@ -26,11 +26,13 @@ export async function SiteFooter() {
               </a>
               <a
                 className="inline-flex items-center justify-center gap-2.5 rounded-md px-1 py-1 text-sm text-[#d7e3da] transition-colors hover:text-white md:justify-start"
-                href={`mailto:${CONTACT_EMAIL}`}
+                href="/kontakt#kontakt-form"
               >
                 <Mail className="size-4 shrink-0 text-[#d8e6dc]" aria-hidden />
                 <span className="min-w-0">
-                  <span className="block break-all text-sm leading-none font-semibold tracking-tight sm:text-lg">{CONTACT_EMAIL}</span>
+                  <span className="block break-all text-sm leading-none font-semibold tracking-tight sm:text-lg">
+                    Skriv til os via kontaktformular
+                  </span>
                 </span>
               </a>
               <a

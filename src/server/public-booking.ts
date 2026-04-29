@@ -8,9 +8,8 @@ import { getSiteSettings } from "@/lib/settings";
 import { listAvailableOpenSlots } from "@/lib/slots";
 import { createBookingDecisionUrl } from "@/lib/booking-decision-link";
 import { sendAdminBookingNotificationEmail, sendBookingConfirmationEmail } from "@/lib/mail";
+import { formatBookingSlotRangeDa } from "@/lib/booking-datetime";
 import { z } from "zod";
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
 
 const addressSchema = z.object({
   addressLine: z.string().trim().min(3, "Adresse er for kort."),
@@ -184,7 +183,7 @@ export async function createBookingRequest(raw: unknown) {
       });
     });
 
-    const whenLabel = format(booking.slot.startsAt, "PPP 'kl.' p", { locale: da });
+    const whenLabel = formatBookingSlotRangeDa(booking.slot.startsAt, booking.slot.endsAt);
     const addressLabel = `${booking.addressLine}, ${booking.postalCode} ${booking.city}`;
 
     await sendBookingConfirmationEmail({

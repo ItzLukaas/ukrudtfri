@@ -8,7 +8,6 @@ import { SiteMobileNav } from "@/components/site-mobile-nav";
 import { CalendarCheck2, Mail, MapPin, Phone, X } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CONTACT_EMAIL } from "@/lib/site-config";
 
 export function SiteHeader({ baseLabel, baseLatitude, baseLongitude }: { baseLabel: string; baseLatitude: number; baseLongitude: number }) {
   const [topbarOpen, setTopbarOpen] = useState(true);
@@ -35,11 +34,11 @@ export function SiteHeader({ baseLabel, baseLatitude, baseLongitude }: { baseLab
               +45 41 82 00 46
             </a>
             <a
-              href={`mailto:${CONTACT_EMAIL}`}
+              href="/kontakt#kontakt-form"
               className="inline-flex min-h-10 min-w-0 items-center gap-1 whitespace-nowrap text-[#d7e3da] transition-colors hover:text-white"
             >
               <Mail className="size-3.5 shrink-0 text-[#d7e3da]" aria-hidden />
-              <span className="truncate">{CONTACT_EMAIL}</span>
+              <span className="truncate">Skriv til os</span>
             </a>
             <a
               href={mapHref}

@@ -1,5 +1,4 @@
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
+import { formatBookingDateTimeDa, formatBookingSlotRangeDa } from "@/lib/booking-datetime";
 
 function escapeHtml(value: string) {
   return value
@@ -25,8 +24,8 @@ type BookingForVars = {
 };
 
 export function bookingToTemplateVars(booking: BookingForVars): Record<string, string> {
-  const whenLabel = format(booking.slot.startsAt, "PPP 'kl.' p", { locale: da });
-  const slotEndLabel = format(booking.slot.endsAt, "PPP 'kl.' p", { locale: da });
+  const whenLabel = formatBookingSlotRangeDa(booking.slot.startsAt, booking.slot.endsAt);
+  const slotEndLabel = formatBookingDateTimeDa(booking.slot.endsAt);
   const addressLabel = `${booking.addressLine}, ${booking.postalCode} ${booking.city}`;
   const price = `${booking.totalPrice.toLocaleString("da-DK")} kr`;
 

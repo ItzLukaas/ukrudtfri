@@ -129,7 +129,7 @@ export function BookingWizard({
       ? `https://maps.google.com/maps?q=${encodeURIComponent(addressQuery)}&t=k&z=17&output=embed`
       : null;
 
-  const progressPct = ((step - 1) / (STEPS.length - 1)) * 100;
+  const progressWidthClass = step === 1 ? "w-0" : step === 2 ? "w-1/3" : step === 3 ? "w-2/3" : "w-full";
 
   function onValidateAddress() {
     runTransition(async () => {
@@ -203,7 +203,7 @@ export function BookingWizard({
         {/* Progress + stepper */}
         <div className="space-y-4">
           <div className="h-2 overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-primary transition-[width] duration-500 ease-out" style={{ width: `${progressPct}%` }} />
+            <div className={cn("h-full rounded-full bg-primary transition-[width] duration-500 ease-out", progressWidthClass)} />
           </div>
           <ol className="grid grid-cols-4 gap-2 sm:gap-3" aria-label="Booking trin">
             {STEPS.map((s) => {

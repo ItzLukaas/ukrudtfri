@@ -256,6 +256,8 @@ type BookingStatusMailPayload = {
   totalPriceDkk: number;
 };
 
+type CorrectedBookingConfirmationPayload = Omit<BookingStatusMailPayload, "status">;
+
 type BookingReminderMailPayload = {
   to: string;
   customerName: string;
@@ -439,21 +441,11 @@ export async function sendBookingStatusEmail(payload: BookingStatusMailPayload) 
       : payload.status === "REJECTED"
         ? "Om din booking (den blev ikke bekræftet)"
         : `Lille opdatering på din booking`;
+  const confirmedCopy = confirmedBookingCopy(payload, "standard");
 
   const text =
     payload.status === "CONFIRMED"
-      ? [
-          `Hej ${payload.customerName},`,
-          ``,
-          `Så er det bare at sige: vi kommer som aftalt.`,
-          `Vi ses ${payload.whenLabel}.`,
-          ``,
-          `Adresse: ${payload.addressLabel}`,
-          `Areal: ${payload.squareMeters} m²`,
-          `Vejledende pris: ${payload.totalPriceDkk.toLocaleString("da-DK")} kr`,
-          ``,
-          `Tak fordi du valgte os — vi glæder os.`,
-        ].join("\n")
+      ? confirmedCopy.textLines.join("\n")
       : payload.status === "REJECTED"
         ? [
             `Hej ${payload.customerName},`,
@@ -479,10 +471,7 @@ export async function sendBookingStatusEmail(payload: BookingStatusMailPayload) 
   const bodyHtml =
     payload.status === "CONFIRMED"
       ? `
-    <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:${COL.text};font-family:${FONT};">
-      Hej <strong>${escapeHtml(payload.customerName)}</strong>,<br /><br />
-      Vi kan godt komme som aftalt — her er lige stumperne samlet, så du har dem for dig selv.
-    </p>
+    ${confirmedCopy.introHtml}
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 10px 0;">
       <tr><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:12px;color:${COL.muted};width:38%;font-family:${FONT};">Status</td><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:14px;font-weight:600;color:${COL.primary};font-family:${FONT};">${escapeHtml(statusLabel)}</td></tr>
       <tr><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:12px;color:${COL.muted};font-family:${FONT};">Tidspunkt</td><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:14px;color:${COL.text};font-family:${FONT};">${escapeHtml(payload.whenLabel)}</td></tr>
@@ -490,7 +479,7 @@ export async function sendBookingStatusEmail(payload: BookingStatusMailPayload) 
       <tr><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:12px;color:${COL.muted};font-family:${FONT};">Areal</td><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:14px;color:${COL.text};font-family:${FONT};">${escapeHtml(String(payload.squareMeters))} m²</td></tr>
       <tr><td style="padding:7px 0 0 0;font-size:12px;color:${COL.muted};font-family:${FONT};">Vejledende pris</td><td style="padding:7px 0 0 0;font-size:15px;font-weight:700;color:${COL.primary};font-family:${FONT};">${escapeHtml(`${payload.totalPriceDkk.toLocaleString("da-DK")} kr`)}</td></tr>
     </table>
-    <p style="margin:0;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">Vi ses derude — og tak for tilliden.</p>
+    ${confirmedCopy.closingHtml}
     `
       : payload.status === "REJECTED"
         ? `
@@ -541,6 +530,114 @@ export async function sendBookingStatusEmail(payload: BookingStatusMailPayload) 
     to: payload.to,
     subject,
     text,
+    html,
+  });
+
+  return { skipped: false as const };
+}
+
+function confirmedBookingCopy(payload: CorrectedBookingConfirmationPayload, variant: "standard" | "corrected") {
+  if (variant === "corrected") {
+    return {
+      lead: `Vi kommer <strong>${escapeHtml(payload.whenLabel)}</strong>.`,
+      introHtml: `
+    <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:${COL.text};font-family:${FONT};">
+      Hej <strong>${escapeHtml(payload.customerName)}</strong>,<br /><br />
+      Tak for din booking hos os.<br /><br />
+      Dette er din endelige og gældende bookingbekræftelse. Hvis du tidligere har modtaget en mail med et tidspunkt, der ligger to timer tidligere end det aftalte, skal du se bort fra den. Det korrekte tidspunkt fremgår af denne mail.
+    </p>
+    `,
+      closingHtml: `
+    <p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">
+      Det er det tidspunkt, du selv har valgt via vores hjemmeside, som er gældende, og vi ankommer inden for dette tidsrum.
+    </p>
+    <p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">
+      Hvis der mod forventning opstår behov for ændringer, er du altid velkommen til at kontakte os. Ombooking skal ske senest 24 timer før aftalt tid.
+    </p>
+    <p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">Vi beklager eventuel forvirring fra den tidligere udsendte mail.</p>
+    <p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">Vi glæder os til at komme og give din græsplæne et løft 🌱</p>
+    <p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">Vi ses snart.</p>
+    <p style="margin:0;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">God aften 😊</p>
+    `,
+      textLines: [
+        `Hej ${payload.customerName},`,
+        ``,
+        `Tak for din booking hos os.`,
+        `Dette er din endelige og gældende bookingbekræftelse. Hvis du tidligere har modtaget en mail med et tidspunkt, der ligger to timer tidligere end det aftalte, skal du se bort fra den. Det korrekte tidspunkt fremgår af denne mail.`,
+        ``,
+        `Status: bekræftet`,
+        `Tidspunkt: ${payload.whenLabel}`,
+        `Adresse: ${payload.addressLabel}`,
+        `Areal: ${payload.squareMeters} m²`,
+        `Vejledende pris: ${payload.totalPriceDkk.toLocaleString("da-DK")} kr`,
+        ``,
+        `Det er det tidspunkt, du selv har valgt via vores hjemmeside, som er gældende, og vi ankommer inden for dette tidsrum.`,
+        `Hvis der mod forventning opstår behov for ændringer, er du altid velkommen til at kontakte os. Ombooking skal ske senest 24 timer før aftalt tid.`,
+        `Vi beklager eventuel forvirring fra den tidligere udsendte mail.`,
+        `Vi glæder os til at komme og give din græsplæne et løft 🌱`,
+        `Vi ses snart.`,
+        `God aften 😊`,
+      ],
+    };
+  }
+
+  return {
+    lead: `Vi kommer <strong>${escapeHtml(payload.whenLabel)}</strong>.`,
+    introHtml: `
+    <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:${COL.text};font-family:${FONT};">
+      Hej <strong>${escapeHtml(payload.customerName)}</strong>,<br /><br />
+      Vi kan godt komme som aftalt — her er lige stumperne samlet, så du har dem for dig selv.
+    </p>
+    `,
+    closingHtml: `<p style="margin:0;font-size:14px;line-height:1.65;color:${COL.text};font-family:${FONT};">Vi ses derude — og tak for tilliden.</p>`,
+    textLines: [
+      `Hej ${payload.customerName},`,
+      ``,
+      `Så er det bare at sige: vi kommer som aftalt.`,
+      `Vi ses ${payload.whenLabel}.`,
+      ``,
+      `Adresse: ${payload.addressLabel}`,
+      `Areal: ${payload.squareMeters} m²`,
+      `Vejledende pris: ${payload.totalPriceDkk.toLocaleString("da-DK")} kr`,
+      ``,
+      `Tak fordi du valgte os — vi glæder os.`,
+    ],
+  };
+}
+
+export async function sendCorrectedBookingConfirmationEmail(payload: CorrectedBookingConfirmationPayload) {
+  const from = process.env.EMAIL_FROM ?? "Ukrudtfri <booking@ukrudtfri.dk>";
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return { skipped: true as const };
+
+  const resend = new Resend(apiKey);
+  const first = payload.customerName.split(" ")[0] ?? "";
+  const subject = first ? `Korrigeret bookingbekræftelse, ${first}` : "Korrigeret bookingbekræftelse";
+  const copy = confirmedBookingCopy(payload, "corrected");
+
+  const bodyHtml = `
+    ${copy.introHtml}
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 10px 0;">
+      <tr><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:12px;color:${COL.muted};width:38%;font-family:${FONT};">Status</td><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:14px;font-weight:600;color:${COL.primary};font-family:${FONT};">bekræftet</td></tr>
+      <tr><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:12px;color:${COL.muted};font-family:${FONT};">Tidspunkt</td><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:14px;color:${COL.text};font-family:${FONT};">${escapeHtml(payload.whenLabel)}</td></tr>
+      <tr><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:12px;color:${COL.muted};font-family:${FONT};">Adresse</td><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:14px;color:${COL.text};font-family:${FONT};">${escapeHtml(payload.addressLabel)}</td></tr>
+      <tr><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:12px;color:${COL.muted};font-family:${FONT};">Areal</td><td style="padding:7px 0;border-bottom:1px solid ${COL.rowLine};font-size:14px;color:${COL.text};font-family:${FONT};">${escapeHtml(String(payload.squareMeters))} m²</td></tr>
+      <tr><td style="padding:7px 0 0 0;font-size:12px;color:${COL.muted};font-family:${FONT};">Vejledende pris</td><td style="padding:7px 0 0 0;font-size:15px;font-weight:700;color:${COL.primary};font-family:${FONT};">${escapeHtml(`${payload.totalPriceDkk.toLocaleString("da-DK")} kr`)}</td></tr>
+    </table>
+    ${copy.closingHtml}
+  `;
+  const html = simpleCustomerEmail({
+    heading: "Så er det en aftale",
+    lead: copy.lead,
+    bodyHtml,
+    recipientEmail: payload.to,
+  });
+
+  await resend.emails.send({
+    from,
+    to: payload.to,
+    subject,
+    text: copy.textLines.join("\n"),
     html,
   });
 

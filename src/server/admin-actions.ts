@@ -2,12 +2,15 @@
 
 import { auth } from "@/auth";
 import { BookingStatus } from "@prisma/client";
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
 import { prisma } from "@/lib/prisma";
 import { generateCandidateSlots, type GenerateSlotsInput } from "@/lib/slot-generator";
 import { substituteTemplateVars } from "@/lib/email-template-vars";
-import { sendBookingConfirmationEmail, sendTemplatedCustomerEmail } from "@/lib/mail";
+import {
+  sendBookingConfirmationEmail,
+  sendCorrectedBookingConfirmationEmail,
+  sendTemplatedCustomerEmail,
+} from "@/lib/mail";
+import { formatBookingSlotRangeDa } from "@/lib/booking-datetime";
 import { geocodeDanishAddress } from "@/lib/geocoding";
 import { haversineKm } from "@/lib/geo";
 import { calculateTotalDkk } from "@/lib/pricing";
@@ -347,6 +350,33 @@ export async function sendTemplateToBookingAction(bookingId: string, templateSlu
   return { ok: true as const };
 }
 
+export async function sendCorrectedConfirmationToBookingAction(bookingId: string) {
+  await requireAdmin();
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: { slot: true },
+  });
+  if (!booking) return { ok: false as const, message: "Booking blev ikke fundet." };
+  if (booking.status !== "CONFIRMED") {
+    return { ok: false as const, message: "Korrigeret bekræftelse kan kun sendes for bekræftede bookinger." };
+  }
+
+  const whenLabel = formatBookingSlotRangeDa(booking.slot.startsAt, booking.slot.endsAt);
+  const addressLabel = `${booking.addressLine}, ${booking.postalCode} ${booking.city}`;
+  const result = await sendCorrectedBookingConfirmationEmail({
+    to: booking.customerEmail,
+    customerName: booking.customerName,
+    whenLabel,
+    addressLabel,
+    squareMeters: booking.squareMeters,
+    totalPriceDkk: Number(booking.totalPrice),
+  });
+  if (result.skipped) {
+    return { ok: false as const, message: "Mail kunne ikke sendes (manglende mail-konfiguration)." };
+  }
+  return { ok: true as const };
+}
+
 const manualBookingSchema = z
   .object({
     customerName: z.string().trim().min(2, "Navn er for kort."),
@@ -482,7 +512,7 @@ export async function createManualBookingAction(raw: unknown) {
     });
 
     if (data.createCustomerEmails) {
-      const whenLabel = format(booking.slot.startsAt, "PPP 'kl.' p", { locale: da });
+      const whenLabel = formatBookingSlotRangeDa(booking.slot.startsAt, booking.slot.endsAt);
       const addressLabel = `${booking.addressLine}, ${booking.postalCode} ${booking.city}`;
       await sendBookingConfirmationEmail({
         to: booking.customerEmail,

@@ -3,6 +3,7 @@ import { DM_Sans, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { AppProviders } from "@/components/app-providers";
+import { PlausibleAnalytics } from "@/components/plausible-analytics";
 import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
 import { DEFAULT_SEO_DESCRIPTION, DEFAULT_SEO_TITLE, SITE_KEYWORDS, defaultOpenGraph, defaultTwitter } from "@/lib/seo";
 
@@ -70,16 +71,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="da" className={`${dmSans.variable} ${geistMono.variable} h-full antialiased`}>
       <head>
-        <script
+        <Script
           id="Cookiebot"
           src="https://consent.cookiebot.com/uc.js"
           data-cbid="c6d79fce-f48c-4891-81bf-8015db0ba290"
           data-blockingmode="auto"
-          type="text/javascript"
+          strategy="beforeInteractive"
         />
       </head>
       <body className="min-h-full flex flex-col">
         <AppProviders>{children}</AppProviders>
+        <PlausibleAnalytics />
         <Script src="//code.tidio.co/pecppzzx0xibng9x5yvaunutm9nl12ti.js" strategy="afterInteractive" />
       </body>
     </html>

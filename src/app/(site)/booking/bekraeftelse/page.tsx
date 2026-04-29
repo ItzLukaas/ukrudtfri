@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CONTACT_EMAIL } from "@/lib/site-config";
 import { getBookingSummaryPublic } from "@/server/public-booking";
 import { format } from "date-fns";
 import { da } from "date-fns/locale";
@@ -62,11 +61,11 @@ export default async function BookingReceiptPage({ searchParams }: { searchParam
               før aftalt tidspunkt.
             </p>
             <p className="mt-2">
-              Kontakt os på{" "}
-              <a className="font-medium text-foreground" href={`mailto:${CONTACT_EMAIL}`}>
-                {CONTACT_EMAIL}
-              </a>{" "}
-              eller{" "}
+              Kontakt os via{" "}
+              <Link className="font-medium text-foreground underline underline-offset-4 hover:no-underline" href="/kontakt#kontakt-form">
+                kontaktformularen
+              </Link>{" "}
+              eller telefon{" "}
               <a className="font-medium text-foreground" href="tel:+4541820046">+45 41 82 00 46</a>.
             </p>
           </div>

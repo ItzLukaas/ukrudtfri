@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
@@ -11,22 +11,22 @@ import { cn } from "@/lib/utils";
 import { ArrowRight, BadgeCheck, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: { absolute: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner" },
+  title: { absolute: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk" },
   description:
-    "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+    "Få en flot, tæt og grøn græsplæne med professionel ukrudtsbekæmpelse og sprøjtning af græsplæner. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
   alternates: { canonical: SITE_URL },
   openGraph: {
     url: SITE_URL,
-    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner",
+    title: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk",
     description:
-      "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+      "Få en flot, tæt og grøn græsplæne med professionel ukrudtsbekæmpelse og sprøjtning af græsplæner. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
     images: [{ url: `${SITE_URL}/images/hero-3.jpg`, width: 1200, height: 630, alt: SITE_BRAND }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner",
+    title: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk",
     description:
-      "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+      "Få en flot, tæt og grøn græsplæne med professionel ukrudtsbekæmpelse og sprøjtning af græsplæner. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
     images: [`${SITE_URL}/images/hero-3.jpg`],
   },
 };
@@ -131,7 +131,7 @@ export default async function HomePage() {
           <div className="mx-auto w-full max-w-xl px-1 text-center lg:mx-0 lg:px-0 lg:text-left">
             <HeroTitle />
             <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mx-0 lg:text-xl">
-              Vi hjælper dig med professionel behandling af ukrudt i græsplænen i lokalområdet - enkelt, trygt og effektivt.
+              Vi gør din græsplæne ukrudtfri og flot igen i Give, Grindsted, Brande, Vejle, Billund og nærliggende byer.
             </p>
             <PrimaryCtas className="mx-auto mt-7 w-full max-w-[22rem] justify-center sm:mt-8 sm:max-w-none lg:mx-0 lg:justify-start" />
           </div>
@@ -398,6 +398,36 @@ export default async function HomePage() {
                 </summary>
                 <p className="mt-3 pr-8 text-sm leading-relaxed text-muted-foreground sm:text-base">{item.a}</p>
               </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border/60 bg-background">
+        <div className={shell}>
+          <SectionHeader
+            eyebrow="Lokale sider"
+            title="Find service i dit lokalområde"
+            subtitle="Vi har lokale bysider med relevant info om ukrudtsbekæmpelse, dækning og booking."
+          />
+          <div className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-3">
+            {[
+              ["/byer", "Se alle byer"],
+              ["/byer/give", "Ukrudtsbekæmpelse i Give"],
+              ["/byer/grindsted", "Ukrudtsbekæmpelse i Grindsted"],
+              ["/byer/vejle", "Ukrudtsbekæmpelse i Vejle"],
+              ["/kontakt", "Kontakt og rådgivning"],
+            ].map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "min-h-10 rounded-full border-border bg-background px-4 text-sm font-medium",
+                )}
+              >
+                {label}
+              </Link>
             ))}
           </div>
         </div>
