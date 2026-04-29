@@ -118,9 +118,7 @@ export function AdminManualBookingClient({ settings, availableSlots }: ManualBoo
       <Card className="border-border/60">
         <CardHeader>
           <CardTitle>Manuel booking</CardTitle>
-          <CardDescription>
-            Når <strong>Opret kunde til automatiske mails</strong> er valgt, inkluderer det bekræftelsesmail nu og påmindelse cirka 2 timer før.
-          </CardDescription>
+          <CardDescription>Udfyld formularen og opret booking direkte fra admin.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
