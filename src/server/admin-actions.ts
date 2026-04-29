@@ -10,7 +10,7 @@ import {
   sendCorrectedBookingConfirmationEmail,
   sendTemplatedCustomerEmail,
 } from "@/lib/mail";
-import { formatBookingSlotRangeDa } from "@/lib/booking-datetime";
+import { formatBookingSlotRangeDa, parseDanishLocalDateTimeInput } from "@/lib/booking-datetime";
 import { geocodeDanishAddress } from "@/lib/geocoding";
 import { haversineKm } from "@/lib/geo";
 import { calculateTotalDkk } from "@/lib/pricing";
@@ -178,9 +178,9 @@ export async function createBlockedWindowAction(raw: unknown) {
   const parsed = blockedSchema.safeParse(raw);
   if (!parsed.success) return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Ugyldig periode." };
 
-  const startsAt = new Date(parsed.data.startsAt);
-  const endsAt = new Date(parsed.data.endsAt);
-  if (!Number.isFinite(startsAt.getTime()) || !Number.isFinite(endsAt.getTime())) {
+  const startsAt = parseDanishLocalDateTimeInput(parsed.data.startsAt);
+  const endsAt = parseDanishLocalDateTimeInput(parsed.data.endsAt);
+  if (!startsAt || !endsAt || !Number.isFinite(startsAt.getTime()) || !Number.isFinite(endsAt.getTime())) {
     return { ok: false as const, message: "Ugyldige datoer." };
   }
   if (endsAt <= startsAt) return { ok: false as const, message: "Sluttid skal være efter starttid." };
@@ -482,8 +482,8 @@ export async function createManualBookingAction(raw: unknown) {
         });
       }
 
-      const startsAt = new Date(data.newStartsAt!);
-      if (!Number.isFinite(startsAt.getTime())) throw new Error("SLOT_INVALID");
+      const startsAt = parseDanishLocalDateTimeInput(data.newStartsAt!);
+      if (!startsAt || !Number.isFinite(startsAt.getTime())) throw new Error("SLOT_INVALID");
       const endsAt = new Date(startsAt.getTime() + (data.newDurationMinutes ?? 120) * 60 * 1000);
       if (startsAt < new Date()) throw new Error("SLOT_IN_PAST");
       const blocked = await tx.blockedWindow.findFirst({

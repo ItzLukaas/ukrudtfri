@@ -2,8 +2,6 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
 import { Calculator, CalendarClock, Mail, MapPin, Phone, User } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { calculateTotalDkk } from "@/lib/pricing";
+import { formatBookingSlotRangeFromIsoDa } from "@/lib/booking-datetime";
 import { checkServiceArea } from "@/server/public-booking";
 import { createManualBookingAction } from "@/server/admin-actions";
 
@@ -62,7 +61,7 @@ export function AdminManualBookingClient({ settings, availableSlots }: ManualBoo
     if (!slotId) return null;
     const slot = availableSlots.find((s) => s.id === slotId);
     if (!slot) return null;
-    return `${format(new Date(slot.startsAt), "EEE d. MMM yyyy 'kl.' HH:mm", { locale: da })} - ${format(new Date(slot.endsAt), "HH:mm")}`;
+    return formatBookingSlotRangeFromIsoDa(slot.startsAt, slot.endsAt);
   }, [availableSlots, slotId]);
 
   function onCheckAddress() {
@@ -213,7 +212,7 @@ export function AdminManualBookingClient({ settings, availableSlots }: ManualBoo
                   {availableSlots.length === 0 ? <option value="">Ingen ledige tider</option> : null}
                   {availableSlots.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {format(new Date(s.startsAt), "EEE d. MMM yyyy 'kl.' HH:mm", { locale: da })} - {format(new Date(s.endsAt), "HH:mm")}
+                      {formatBookingSlotRangeFromIsoDa(s.startsAt, s.endsAt)}
                     </option>
                   ))}
                 </select>

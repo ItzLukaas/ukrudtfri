@@ -5,8 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getBookingSummaryPublic } from "@/server/public-booking";
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
+import { formatBookingSlotRangeDa } from "@/lib/booking-datetime";
 
 export const metadata: Metadata = {
   title: "Booking modtaget til certificeret plænesprøjtning",
@@ -22,7 +21,7 @@ export default async function BookingReceiptPage({ searchParams }: { searchParam
   const booking = await getBookingSummaryPublic(id);
   if (!booking) notFound();
 
-  const whenLabel = format(booking.slot.startsAt, "PPP 'kl.' p", { locale: da });
+  const whenLabel = formatBookingSlotRangeDa(booking.slot.startsAt, booking.slot.endsAt);
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-12">

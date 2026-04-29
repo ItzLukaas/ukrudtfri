@@ -2,8 +2,6 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
 import { BookingStatus } from "@prisma/client";
 import { toast } from "sonner";
 import type { AdminDashboardPayload } from "@/lib/admin-payload-types";
@@ -20,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { formatBookingSlotRangeFromIsoDa } from "@/lib/booking-datetime";
 
 function statusBadgeVariant(status: BookingStatus): "default" | "secondary" | "destructive" {
   if (status === "CONFIRMED") return "default";
@@ -91,7 +90,7 @@ export function AdminBookingsClient({
                 {bookings.map((b) => (
                   <TableRow key={b.id}>
                     <TableCell className="whitespace-nowrap text-xs">
-                      {format(new Date(b.slotStartsAt), "d. MMM HH:mm", { locale: da })}
+                      {formatBookingSlotRangeFromIsoDa(b.slotStartsAt, b.slotEndsAt)}
                     </TableCell>
                     <TableCell className="text-xs">
                       <div className="font-medium">{b.customerName}</div>

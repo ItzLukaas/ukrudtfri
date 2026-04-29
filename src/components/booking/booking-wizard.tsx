@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo, useState, startTransition, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
-import { da } from "date-fns/locale";
 import {
   Building2,
   Calculator,
@@ -23,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatBookingDateTimeFromIsoDa, formatBookingSlotRangeFromIsoDa } from "@/lib/booking-datetime";
 import { calculateTotalDkk } from "@/lib/pricing";
 import { checkServiceArea, createBookingRequest, type AddressCheckResult } from "@/server/public-booking";
 import { cn } from "@/lib/utils";
@@ -426,8 +425,8 @@ export function BookingWizard({
               <ul className="grid gap-3 sm:grid-cols-2">
                 {initialSlots.map((s) => {
                   const active = s.id === selectedSlotId;
-                  const start = new Date(s.startsAt);
-                  const end = new Date(s.endsAt);
+                  const slotDateTimeLabel = formatBookingDateTimeFromIsoDa(s.startsAt);
+                  const slotRangeLabel = formatBookingSlotRangeFromIsoDa(s.startsAt, s.endsAt);
                   return (
                     <li key={s.id}>
                       <button
@@ -443,11 +442,9 @@ export function BookingWizard({
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <p className="text-xs font-semibold uppercase tracking-wide text-primary/80">
-                              {format(start, "EEEE", { locale: da })}
+                              {slotDateTimeLabel}
                             </p>
-                            <p className="text-lg font-semibold tabular-nums tracking-tight">
-                              {format(start, "d. MMM", { locale: da })}
-                            </p>
+                            <p className="text-lg font-semibold tabular-nums tracking-tight">{slotRangeLabel}</p>
                           </div>
                           <span
                             className={cn(
@@ -460,9 +457,7 @@ export function BookingWizard({
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Clock className="size-4 shrink-0 text-primary/70" aria-hidden />
-                          <span className="font-medium text-foreground">
-                            {format(start, "HH:mm")} – {format(end, "HH:mm")}
-                          </span>
+                          <span className="font-medium text-foreground">{slotRangeLabel}</span>
                         </div>
                       </button>
                     </li>
@@ -571,7 +566,7 @@ export function BookingWizard({
               label="Tid"
               value={
                 selectedSlot
-                  ? `${format(new Date(selectedSlot.startsAt), "EEE d. MMM", { locale: da })} · ${format(new Date(selectedSlot.startsAt), "HH:mm")}–${format(new Date(selectedSlot.endsAt), "HH:mm")}`
+                  ? formatBookingSlotRangeFromIsoDa(selectedSlot.startsAt, selectedSlot.endsAt)
                   : "—"
               }
             />

@@ -201,6 +201,7 @@ export async function getAdminCalendarData(): Promise<
 export async function getAdminBookingsData(): Promise<Pick<AdminDashboardPayload, "bookings" | "emailTemplates">> {
   const [bookings, emailTemplates] = await Promise.all([
     prisma.booking.findMany({
+      where: { status: { not: "CANCELLED" } },
       orderBy: { createdAt: "desc" },
       take: 150,
       select: {
@@ -358,6 +359,7 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
       },
     }),
     prisma.booking.findMany({
+      where: { status: { not: "CANCELLED" } },
       orderBy: { createdAt: "desc" },
       take: 150,
       select: {
