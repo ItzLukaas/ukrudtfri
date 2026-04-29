@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState, startTransition, useTransition } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { da } from "date-fns/locale";
@@ -338,9 +337,11 @@ export function BookingWizard({
             description={`Pris beregnes som m² × ${pricing.pricePerSquareMeter.toLocaleString("da-DK")} kr. Minimum ${pricing.minimumPrice.toLocaleString("da-DK")} kr.`}
           >
             <div className="space-y-3">
-              <Label htmlFor="sqm" className="text-sm font-medium">
-                Græsplæne (m²)
-              </Label>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Label htmlFor="sqm" className="text-sm font-medium">
+                  Græsplæne (m²)
+                </Label>
+              </div>
               <div className="relative max-w-md">
                 <Ruler className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
                 <Input

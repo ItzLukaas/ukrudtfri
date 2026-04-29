@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { AppProviders } from "@/components/app-providers";
 import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="da" className={`${dmSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <AppProviders>{children}</AppProviders>
+        <Script src="//code.tidio.co/pecppzzx0xibng9x5yvaunutm9nl12ti.js" strategy="afterInteractive" />
       </body>
     </html>
   );
