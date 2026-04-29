@@ -253,7 +253,7 @@ export async function getAdminAvailabilityData(): Promise<Pick<AdminDashboardPay
   const slots = await prisma.openSlot.findMany({
     orderBy: { startsAt: "asc" },
     take: 400,
-    select: { id: true, startsAt: true, endsAt: true, booking: { select: { id: true } } },
+    select: { id: true, startsAt: true, endsAt: true, booking: { select: { id: true, status: true } } },
   });
 
   return {
