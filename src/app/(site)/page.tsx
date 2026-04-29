@@ -403,36 +403,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border/60 bg-background">
-        <div className={shell}>
-          <SectionHeader
-            eyebrow="Lokale sider"
-            title="Find service i dit lokalområde"
-            subtitle="Vi har lokale bysider med relevant info om ukrudtsbekæmpelse, dækning og booking."
-          />
-          <div className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-3">
-            {[
-              ["/byer", "Se alle byer"],
-              ["/byer/give", "Ukrudtsbekæmpelse i Give"],
-              ["/byer/grindsted", "Ukrudtsbekæmpelse i Grindsted"],
-              ["/byer/vejle", "Ukrudtsbekæmpelse i Vejle"],
-              ["/kontakt", "Kontakt og rådgivning"],
-            ].map(([href, label]) => (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  buttonVariants({ variant: "outline" }),
-                  "min-h-10 rounded-full border-border bg-background px-4 text-sm font-medium",
-                )}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
     </main>
   );
 }

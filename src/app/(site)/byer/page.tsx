@@ -26,12 +26,7 @@ export default function CitiesPage() {
         <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:py-14">
           <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Byer vi dækker</h1>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Her kan du finde alle vores lokale bysider med information om ukrudtsbekæmpelse af græsplæner, priser og
-            booking.
-          </p>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Vælg den by, der ligger tættest på dig, og gå videre til en side med lokal tekst og direkte links til booking
-            og kontakt.
+            Her kan du finde alle vores lokale bysider med information om ukrudtsbekæmpelse.
           </p>
         </div>
       </section>

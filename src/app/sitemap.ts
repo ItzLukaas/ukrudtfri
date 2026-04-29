@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/byer`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE_URL}/booking`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE_URL}/kontakt`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/ukrudtsbekaempelse-grindsted`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     ...CITY_PAGE_SLUGS.map((slug) => ({
       url: `${SITE_URL}/byer/${slug}`,
       lastModified: now,
