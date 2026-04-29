@@ -37,7 +37,7 @@ export const SERVICE_CITIES = [
 export const DEFAULT_SEO_TITLE = "Ukrudtfri.dk | Professionel sprøjtning af græsplæner";
 
 export const DEFAULT_SEO_DESCRIPTION =
-  "Få en flot, tæt og grøn græsplæne med professionel sprøjtning af ukrudt. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.";
+  "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.";
 
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/hero-3.jpg`;
 

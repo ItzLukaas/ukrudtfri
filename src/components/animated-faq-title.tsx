@@ -32,11 +32,9 @@ export function AnimatedFaqTitle() {
       Ofte stillede spørgsmål
       <span
         aria-hidden
-        className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-primary/80 transition-transform duration-500 ease-out"
-        style={{
-          transform: `scaleX(${showLine ? 1 : 0})`,
-          transformOrigin: "left center",
-        }}
+        className={`absolute bottom-0 left-0 h-[3px] w-full origin-left rounded-full bg-primary/80 transition-transform duration-500 ease-out ${
+          showLine ? "scale-x-100" : "scale-x-0"
+        }`}
       />
     </span>
   );

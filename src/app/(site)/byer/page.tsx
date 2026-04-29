@@ -26,7 +26,10 @@ export default function CitiesPage() {
         <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:py-14">
           <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Byer vi dækker</h1>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Her kan du finde alle vores lokale bysider med information om ukrudtsbekæmpelse.
+            Her finder du lokale sider om ukrudtsbekæmpelse og sprøjtning af græsplæner i de byer, vi dækker fast.
+          </p>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Hver byside beskriver pris pr. m², lokal dækning, bookingforløb og typiske spørgsmål, så du hurtigt kan vurdere næste skridt.
           </p>
         </div>
       </section>
@@ -58,6 +61,16 @@ export default function CitiesPage() {
                 kontakte os direkte her
               </Link>
               .
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Se også vores side om{" "}
+              <Link
+                href="/ukrudtsbekaempelse-grindsted"
+                className="font-medium text-primary underline underline-offset-4 hover:no-underline"
+              >
+                ukrudtsbekæmpelse i Grindsted
+              </Link>{" "}
+              for et konkret eksempel på service, pris og proces.
             </p>
           </div>
         </div>

@@ -15,10 +15,20 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Implemented in code:
 
-- Metadata and keyword coverage is configured in `src/lib/seo.ts`, `src/app/layout.tsx`, and page-level metadata files.
-- Internal linking support is improved on `src/app/(site)/page.tsx` and `src/app/(site)/byer/page.tsx`.
-- Mobile-friendly performance settings are enabled in `next.config.ts` (`compress`, AVIF/WebP image formats, disabled `x-powered-by` header).
-- Optional lightweight analytics is wired via `src/components/plausible-analytics.tsx` and loaded from `src/app/layout.tsx`.
+- Internal linking support across homepage, city pages, and header navigation.
+- Shorter, keyword-focused meta descriptions on core pages.
+- Stronger keyword placement in key headings and section titles.
+- Expanded copy where pages were previously thin (`/byer` and local city templates).
+- Mobile-oriented frontend performance settings in `next.config.ts` (`compress`, AVIF/WebP, no `x-powered-by`).
+- Optional lightweight analytics via Plausible in `src/components/plausible-analytics.tsx`.
+- Inline style removal in `src/components/animated-faq-title.tsx`.
+
+Requires external/manual setup:
+
+- HTTP/2 or HTTP/3 protocol verification/enforcement at hosting/CDN layer.
+- DNS authentication records (SPF + DMARC).
+- Off-site link building outreach and partner directory placement.
+- Search Console/Bing verification and ongoing indexing monitoring.
 
 ## Analytics setup (Plausible)
 
@@ -65,6 +75,32 @@ Suggested rollout:
 1. Start with `p=none` for monitoring 1-2 weeks.
 2. Move to `p=quarantine`.
 3. Move to `p=reject` when SPF/DKIM alignment is stable.
+
+## Exact manual steps
+
+1. **Enable/verify HTTP/2+**
+   - Deploy behind Vercel/Cloudflare or another TLS edge that supports HTTP/2/3.
+   - In browser DevTools Network, add the `Protocol` column and confirm `h2` or `h3` in production.
+2. **Add SPF TXT record**
+   - Host/name: `@`
+   - Type: `TXT`
+   - Value (Resend-only example): `v=spf1 include:spf.resend.com ~all`
+   - Keep exactly one SPF TXT record for the root.
+3. **Add DMARC TXT record**
+   - Host/name: `_dmarc`
+   - Type: `TXT`
+   - Start value (monitoring): `v=DMARC1; p=none; adkim=s; aspf=s; rua=mailto:dmarc@ukrudtfri.dk; fo=1; pct=100`
+   - After 1-2 weeks with clean alignment, move `p=none` -> `p=quarantine` -> `p=reject`.
+4. **Set analytics environment variables**
+   - Add `NEXT_PUBLIC_PLAUSIBLE_DOMAIN=www.ukrudtfri.dk`
+   - Optionally set `NEXT_PUBLIC_PLAUSIBLE_SRC=https://plausible.io/js/script.js`
+5. **Run outreach for backlinks**
+   - Submit the site to relevant Danish local/business directories.
+   - Ask local partners/suppliers for contextual links to service or city pages.
+   - Prioritize links to `/`, `/byer`, and key city pages.
+6. **Verify indexing tools**
+   - Add/verify domain in Google Search Console and Bing Webmaster Tools.
+   - Submit `https://www.ukrudtfri.dk/sitemap.xml` and monitor coverage/errors monthly.
 
 ## Notes
 

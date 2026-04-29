@@ -200,6 +200,40 @@ export async function CityServicePage({ config, description }: CityServicePagePr
         </div>
       </section>
 
+      <section className="border-t border-border/60 bg-background">
+        <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:py-12">
+          <h2 className="text-balance text-2xl font-semibold tracking-tight sm:text-3xl">
+            Flere lokale sider om ukrudtsbekæmpelse
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-muted-foreground">
+            Vil du sammenligne dækning og pris i nærliggende områder, kan du gå direkte til flere lokale sider her:
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2.5">
+            {[
+              ["give", "Give"],
+              ["grindsted", "Grindsted"],
+              ["brande", "Brande"],
+              ["vejle", "Vejle"],
+              ["billund", "Billund"],
+              ["jelling", "Jelling"],
+            ]
+              .filter(([slug]) => slug !== config.slug)
+              .map(([slug, city]) => (
+                <Link
+                  key={slug}
+                  href={`/byer/${slug}`}
+                  className={cn(buttonVariants({ variant: "outline" }), "min-h-10 rounded-full px-4 text-sm")}
+                >
+                  Ukrudtsbekæmpelse i {city}
+                </Link>
+              ))}
+            <Link href="/byer" className={cn(buttonVariants({ variant: "ghost" }), "min-h-10 rounded-full px-4 text-sm font-semibold")}>
+              Se alle byer
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="border-t border-border/60 bg-muted/20">
         <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:py-14">
           <h2 className="mx-auto max-w-3xl text-balance text-center text-2xl font-semibold tracking-tight sm:text-3xl">

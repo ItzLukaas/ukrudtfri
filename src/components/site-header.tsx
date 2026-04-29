@@ -82,6 +82,7 @@ export function SiteHeader({ baseLabel, baseLatitude, baseLongitude }: { baseLab
               ["/", "Hjem"],
               ["/#fordele", "Fordele"],
               ["/#proces", "Proces"],
+              ["/byer", "Byer"],
               ["/#om-os", "Om os"],
               ["/kontakt", "Kontakt os"],
               ["/#faq", "FAQ"],

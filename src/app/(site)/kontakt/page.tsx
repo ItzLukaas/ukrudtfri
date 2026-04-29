@@ -10,12 +10,12 @@ import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Kontakt os om certificeret plænesprøjtning",
-  description: `Kontakt ${SITE_BRAND} for svar om priser, dækning og behandling. Vi hjælper i Give, Grindsted, Brande og Vejle med certificeret plænesprøjtning.`,
+  description: `Kontakt ${SITE_BRAND} om ukrudtsbekæmpelse og sprøjtning af græsplæner. Få hurtige svar om pris, dækning og booking i lokalområdet.`,
   alternates: { canonical: `${SITE_URL}/kontakt` },
   openGraph: {
     url: `${SITE_URL}/kontakt`,
     title: `Kontakt os om certificeret plænesprøjtning · ${SITE_BRAND}`,
-    description: `Kontakt ${SITE_BRAND} for svar om priser, dækning og behandling. Vi hjælper i Give, Grindsted, Brande og Vejle med certificeret plænesprøjtning.`,
+    description: `Kontakt ${SITE_BRAND} om ukrudtsbekæmpelse og sprøjtning af græsplæner. Få hurtige svar om pris, dækning og booking i lokalområdet.`,
   },
 };
 
@@ -25,9 +25,11 @@ export default async function ContactPage() {
       <section className="border-b border-border/60 bg-muted/30">
         <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Kontakt</p>
-          <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Lad os hjælpe med din græsplæne</h1>
+          <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+            Kontakt os om ukrudtsbekæmpelse af græsplænen
+          </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Udfyld formularen herunder, så vender vi tilbage hurtigst muligt.
+            Udfyld formularen, og få svar på pris, dækning og næste ledige tid til professionel sprøjtning af græsplæner.
           </p>
         </div>
       </section>

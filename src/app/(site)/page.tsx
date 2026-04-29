@@ -13,20 +13,20 @@ import { ArrowRight, BadgeCheck, CalendarDays, ClipboardCheck, Leaf, ShieldCheck
 export const metadata: Metadata = {
   title: { absolute: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk" },
   description:
-    "Få en flot, tæt og grøn græsplæne med professionel ukrudtsbekæmpelse og sprøjtning af græsplæner. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+    "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.",
   alternates: { canonical: SITE_URL },
   openGraph: {
     url: SITE_URL,
     title: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk",
     description:
-      "Få en flot, tæt og grøn græsplæne med professionel ukrudtsbekæmpelse og sprøjtning af græsplæner. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+      "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.",
     images: [{ url: `${SITE_URL}/images/hero-3.jpg`, width: 1200, height: 630, alt: SITE_BRAND }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk",
     description:
-      "Få en flot, tæt og grøn græsplæne med professionel ukrudtsbekæmpelse og sprøjtning af græsplæner. Ukrudtfri.dk dækker Give, Grindsted, Brande og Vejle med certificeret service.",
+      "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.",
     images: [`${SITE_URL}/images/hero-3.jpg`],
   },
 };
@@ -356,6 +356,43 @@ export default async function HomePage() {
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border/60 bg-background">
+        <div className={shell}>
+          <SectionHeader
+            eyebrow="Lokale bysider"
+            title="Find ukrudtsbekæmpelse i din by"
+            subtitle="Læs om lokal pris, dækning og booking på vores bysider for ukrudtsbekæmpelse af græsplæner."
+          />
+          <div className="mt-8 flex flex-wrap justify-center gap-2 sm:gap-3">
+            {[
+              ["give", "Give"],
+              ["grindsted", "Grindsted"],
+              ["brande", "Brande"],
+              ["vejle", "Vejle"],
+              ["billund", "Billund"],
+              ["jelling", "Jelling"],
+            ].map(([slug, city]) => (
+              <Link
+                key={slug}
+                href={`/byer/${slug}`}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "min-h-10 rounded-full border-border px-4 text-sm font-medium",
+                )}
+              >
+                Ukrudtsbekæmpelse i {city}
+              </Link>
+            ))}
+            <Link
+              href="/byer"
+              className={cn(buttonVariants({ variant: "ghost" }), "min-h-10 rounded-full px-4 text-sm font-semibold")}
+            >
+              Se alle byer
+            </Link>
           </div>
         </div>
       </section>
