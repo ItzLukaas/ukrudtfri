@@ -2,10 +2,16 @@
 
 import { auth } from "@/auth";
 import { BookingStatus } from "@prisma/client";
+import { format } from "date-fns";
+import { da } from "date-fns/locale";
 import { prisma } from "@/lib/prisma";
 import { generateCandidateSlots, type GenerateSlotsInput } from "@/lib/slot-generator";
 import { substituteTemplateVars } from "@/lib/email-template-vars";
-import { sendTemplatedCustomerEmail } from "@/lib/mail";
+import { sendBookingConfirmationEmail, sendTemplatedCustomerEmail } from "@/lib/mail";
+import { geocodeDanishAddress } from "@/lib/geocoding";
+import { haversineKm } from "@/lib/geo";
+import { calculateTotalDkk } from "@/lib/pricing";
+import { getSiteSettings } from "@/lib/settings";
 import { setBookingStatus } from "@/server/booking-status";
 import { bookingToTemplateVars } from "@/server/email-template-helpers";
 import { revalidatePath } from "next/cache";
@@ -16,6 +22,7 @@ function revalidateAdmin() {
     "/admin",
     "/admin/calendar",
     "/admin/bookings",
+    "/admin/manual-booking",
     "/admin/availability",
     "/admin/blocks",
     "/admin/settings",
@@ -138,8 +145,20 @@ export async function bulkCreateOpenSlotsAction(raw: unknown) {
 
 export async function deleteOpenSlotAction(slotId: string) {
   await requireAdmin();
-  await prisma.openSlot.deleteMany({
-    where: { id: slotId, booking: null },
+  const slot = await prisma.openSlot.findUnique({
+    where: { id: slotId },
+    include: { booking: { select: { id: true, status: true } } },
+  });
+  if (!slot) return { ok: true as const };
+  if (slot.booking && ["PENDING", "CONFIRMED"].includes(slot.booking.status)) {
+    return { ok: false as const, message: "Kan ikke slette et slot med aktiv booking." };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    if (slot.booking) {
+      await tx.booking.delete({ where: { id: slot.booking.id } });
+    }
+    await tx.openSlot.delete({ where: { id: slotId } });
   });
   revalidateAdmin();
   return { ok: true as const };
@@ -326,4 +345,172 @@ export async function sendTemplateToBookingAction(bookingId: string, templateSlu
     bodyHtmlFragment: bodyHtml,
   });
   return { ok: true as const };
+}
+
+const manualBookingSchema = z
+  .object({
+    customerName: z.string().trim().min(2, "Navn er for kort."),
+    customerEmail: z.string().trim().email("Ugyldig email."),
+    customerPhone: z.string().trim().min(6, "Telefonnummer er for kort."),
+    addressLine: z.string().trim().min(3, "Adresse er for kort."),
+    postalCode: z.string().trim().min(3, "Postnummer er for kort."),
+    city: z.string().trim().min(2, "By er for kort."),
+    squareMeters: z.preprocess(parseFlexibleNumber, z.number().int().positive().max(250_000)),
+    timeMode: z.enum(["existing", "new"]),
+    slotId: z.string().optional(),
+    newStartsAt: z.string().optional(),
+    newDurationMinutes: z.preprocess(parseFlexibleNumber, z.number().int().min(30).max(480)).optional(),
+    createCustomerEmails: z.boolean().default(true),
+  })
+  .superRefine((v, ctx) => {
+    if (v.timeMode === "existing" && !v.slotId) {
+      ctx.addIssue({ code: "custom", message: "Vælg en ledig tid." });
+    }
+    if (v.timeMode === "new") {
+      if (!v.newStartsAt) ctx.addIssue({ code: "custom", message: "Vælg starttidspunkt for ny tid." });
+      if (!v.newDurationMinutes) ctx.addIssue({ code: "custom", message: "Angiv varighed for ny tid." });
+    }
+  });
+
+export async function createManualBookingAction(raw: unknown) {
+  await requireAdmin();
+  const parsed = manualBookingSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Ugyldig booking." };
+
+  const data = parsed.data;
+  const settings = await getSiteSettings();
+  const base = { lat: settings.baseLatitude, lon: settings.baseLongitude };
+  const geocodeHit = await geocodeDanishAddress(
+    { addressLine: data.addressLine, postalCode: data.postalCode, city: data.city },
+    { base },
+  );
+  if (!geocodeHit) return { ok: false as const, message: "Adressen kunne ikke geokodes." };
+
+  const distanceKm = haversineKm(base, { lat: geocodeHit.lat, lon: geocodeHit.lon });
+  const radiusKm = Number(settings.serviceRadiusKm);
+  if (distanceKm > radiusKm) {
+    return { ok: false as const, message: `Adressen er udenfor serviceområdet (${radiusKm} km).` };
+  }
+
+  const totalPrice = calculateTotalDkk(
+    data.squareMeters,
+    Number(settings.pricePerSquareMeter),
+    Number(settings.minimumPrice),
+  );
+
+  try {
+    const booking = await prisma.$transaction(async (tx) => {
+      if (data.timeMode === "existing") {
+        const slot = await tx.openSlot.findUnique({
+          where: { id: data.slotId! },
+          include: { booking: true },
+        });
+        if (!slot || slot.startsAt < new Date()) throw new Error("SLOT_TAKEN");
+        const blocked = await tx.blockedWindow.findFirst({
+          where: { startsAt: { lt: slot.endsAt }, endsAt: { gt: slot.startsAt } },
+        });
+        if (blocked) throw new Error("SLOT_BLOCKED");
+        if (slot.booking && ["PENDING", "CONFIRMED"].includes(slot.booking.status)) throw new Error("SLOT_TAKEN");
+
+        if (slot.booking && ["REJECTED", "CANCELLED"].includes(slot.booking.status)) {
+          return tx.booking.update({
+            where: { id: slot.booking.id },
+            data: {
+              customerName: data.customerName,
+              customerEmail: data.customerEmail,
+              customerPhone: data.customerPhone,
+              addressLine: data.addressLine,
+              postalCode: data.postalCode,
+              city: data.city,
+              latitude: geocodeHit.lat,
+              longitude: geocodeHit.lon,
+              squareMeters: data.squareMeters,
+              totalPrice,
+              status: "CONFIRMED",
+              remindedAt: null,
+            },
+            include: { slot: true },
+          });
+        }
+
+        return tx.booking.create({
+          data: {
+            slotId: slot.id,
+            customerName: data.customerName,
+            customerEmail: data.customerEmail,
+            customerPhone: data.customerPhone,
+            addressLine: data.addressLine,
+            postalCode: data.postalCode,
+            city: data.city,
+            latitude: geocodeHit.lat,
+            longitude: geocodeHit.lon,
+            squareMeters: data.squareMeters,
+            totalPrice,
+            status: "CONFIRMED",
+          },
+          include: { slot: true },
+        });
+      }
+
+      const startsAt = new Date(data.newStartsAt!);
+      if (!Number.isFinite(startsAt.getTime())) throw new Error("SLOT_INVALID");
+      const endsAt = new Date(startsAt.getTime() + (data.newDurationMinutes ?? 120) * 60 * 1000);
+      if (startsAt < new Date()) throw new Error("SLOT_IN_PAST");
+      const blocked = await tx.blockedWindow.findFirst({
+        where: { startsAt: { lt: endsAt }, endsAt: { gt: startsAt } },
+      });
+      if (blocked) throw new Error("SLOT_BLOCKED");
+
+      const slot = await tx.openSlot.create({ data: { startsAt, endsAt } });
+      return tx.booking.create({
+        data: {
+          slotId: slot.id,
+          customerName: data.customerName,
+          customerEmail: data.customerEmail,
+          customerPhone: data.customerPhone,
+          addressLine: data.addressLine,
+          postalCode: data.postalCode,
+          city: data.city,
+          latitude: geocodeHit.lat,
+          longitude: geocodeHit.lon,
+          squareMeters: data.squareMeters,
+          totalPrice,
+          status: "CONFIRMED",
+        },
+        include: { slot: true },
+      });
+    });
+
+    if (data.createCustomerEmails) {
+      const whenLabel = format(booking.slot.startsAt, "PPP 'kl.' p", { locale: da });
+      const addressLabel = `${booking.addressLine}, ${booking.postalCode} ${booking.city}`;
+      await sendBookingConfirmationEmail({
+        to: booking.customerEmail,
+        customerName: booking.customerName,
+        whenLabel,
+        addressLabel,
+        squareMeters: booking.squareMeters,
+        totalPriceDkk: Number(booking.totalPrice),
+        bookingId: booking.id,
+      });
+    }
+
+    revalidateAdmin();
+    return { ok: true as const, bookingId: booking.id };
+  } catch (error) {
+    if (error instanceof Error && error.message === "SLOT_TAKEN") {
+      return { ok: false as const, message: "Tiden er ikke længere ledig." };
+    }
+    if (error instanceof Error && error.message === "SLOT_BLOCKED") {
+      return { ok: false as const, message: "Tiden overlapper med en blokering." };
+    }
+    if (error instanceof Error && error.message === "SLOT_IN_PAST") {
+      return { ok: false as const, message: "Den nye tid ligger i fortiden." };
+    }
+    if (error instanceof Error && error.message === "SLOT_INVALID") {
+      return { ok: false as const, message: "Ugyldigt tidspunkt." };
+    }
+    console.error(error);
+    return { ok: false as const, message: "Der opstod en fejl ved manuel booking." };
+  }
 }

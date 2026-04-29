@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  ClipboardPlus,
   CircleUserRound,
   CalendarDays,
   CalendarRange,
@@ -19,6 +20,7 @@ const nav = [
   { href: "/admin", label: "Overblik", icon: LayoutDashboard },
   { href: "/admin/calendar", label: "Kalender", icon: CalendarDays },
   { href: "/admin/bookings", label: "Bookinger", icon: CalendarRange },
+  { href: "/admin/manual-booking", label: "Manuel booking", icon: ClipboardPlus },
   { href: "/admin/availability", label: "Tider", icon: Timer },
   { href: "/admin/blocks", label: "Blokeringer", icon: MapPin },
   { href: "/admin/settings", label: "Priser & område", icon: Settings2 },

@@ -134,13 +134,36 @@ export async function createBookingRequest(raw: unknown) {
   try {
     const booking = await prisma.$transaction(async (tx) => {
       const slot = await tx.openSlot.findFirst({
-        where: { id: data.slotId, booking: null, startsAt: { gte: new Date() } },
+        where: { id: data.slotId, startsAt: { gte: new Date() } },
+        include: { booking: true },
       });
       if (!slot) throw new Error("SLOT_TAKEN");
+      if (slot.booking && ["PENDING", "CONFIRMED"].includes(slot.booking.status)) throw new Error("SLOT_TAKEN");
 
       const blocks = await tx.blockedWindow.findMany();
       const blocked = blocks.some((b) => slot.startsAt < b.endsAt && b.startsAt < slot.endsAt);
       if (blocked) throw new Error("SLOT_BLOCKED");
+
+      if (slot.booking && ["REJECTED", "CANCELLED"].includes(slot.booking.status)) {
+        return tx.booking.update({
+          where: { id: slot.booking.id },
+          data: {
+            customerName: data.customerName,
+            customerEmail: data.customerEmail,
+            customerPhone: data.customerPhone,
+            addressLine: data.addressLine,
+            postalCode: data.postalCode,
+            city: data.city,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            squareMeters: data.squareMeters,
+            totalPrice,
+            status: "PENDING",
+            remindedAt: null,
+          },
+          include: { slot: true },
+        });
+      }
 
       return tx.booking.create({
         data: {

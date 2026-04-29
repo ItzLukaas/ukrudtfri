@@ -10,10 +10,14 @@ export async function listAvailableOpenSlots(now = new Date()) {
     prisma.openSlot.findMany({
       where: {
         startsAt: { gte: now },
-        booking: null,
+        OR: [
+          { booking: null },
+          { booking: { status: { in: ["REJECTED", "CANCELLED"] } } },
+        ],
       },
       orderBy: { startsAt: "asc" },
       take: 400,
+      include: { booking: true },
     }),
   ]);
 

@@ -4,8 +4,13 @@ import { BookingStatus } from "@prisma/client";
 import type { AdminDashboardPayload } from "@/lib/admin-payload-types";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/settings";
+import { listAvailableOpenSlots } from "@/lib/slots";
 
 export type { AdminDashboardPayload } from "@/lib/admin-payload-types";
+
+function hasActiveBooking(status?: BookingStatus) {
+  return status === "PENDING" || status === "CONFIRMED";
+}
 
 function emptyByStatus(): Record<BookingStatus, number> {
   return {
@@ -260,7 +265,7 @@ export async function getAdminAvailabilityData(): Promise<Pick<AdminDashboardPay
       id: s.id,
       startsAt: s.startsAt.toISOString(),
       endsAt: s.endsAt.toISOString(),
-      hasBooking: Boolean(s.booking),
+      hasBooking: hasActiveBooking(s.booking?.status),
     })),
   };
 }
@@ -288,6 +293,25 @@ export async function getAdminSettingsData(): Promise<Pick<AdminDashboardPayload
       baseLatitude: settings.baseLatitude,
       baseLongitude: settings.baseLongitude,
     },
+  };
+}
+
+export async function getAdminManualBookingData() {
+  const [settings, slots] = await Promise.all([getSiteSettings(), listAvailableOpenSlots(new Date())]);
+  return {
+    settings: {
+      pricePerSquareMeter: Number(settings.pricePerSquareMeter),
+      minimumPrice: Number(settings.minimumPrice),
+      serviceRadiusKm: Number(settings.serviceRadiusKm),
+      baseLabel: settings.baseLabel,
+      baseLatitude: settings.baseLatitude,
+      baseLongitude: settings.baseLongitude,
+    },
+    availableSlots: slots.map((s) => ({
+      id: s.id,
+      startsAt: s.startsAt.toISOString(),
+      endsAt: s.endsAt.toISOString(),
+    })),
   };
 }
 
@@ -445,7 +469,7 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
       id: s.id,
       startsAt: s.startsAt.toISOString(),
       endsAt: s.endsAt.toISOString(),
-      hasBooking: Boolean(s.booking),
+      hasBooking: hasActiveBooking(s.booking?.status),
     })),
     slotsDetailed: slots.map((s) => ({
       id: s.id,
