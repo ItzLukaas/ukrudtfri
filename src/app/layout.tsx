@@ -33,10 +33,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/images/favicon.ico", type: "image/x-icon" },
+      { url: "/images/logo.png", sizes: "512x512", type: "image/png" },
       { url: "/images/favicon.ico", sizes: "any", type: "image/x-icon" },
     ],
-    shortcut: [{ url: "/images/favicon.ico", type: "image/x-icon" }],
+    shortcut: [{ url: "/images/logo.png", sizes: "512x512", type: "image/png" }],
     apple: [{ url: "/images/logo.png", sizes: "180x180", type: "image/png" }],
   },
   title: {

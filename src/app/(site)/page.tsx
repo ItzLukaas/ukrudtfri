@@ -8,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPublicPricing } from "@/server/public-booking";
 import { cn } from "@/lib/utils";
-import { ArrowRight, BadgeCheck, CalendarCheck2, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, ClipboardCheck, Leaf, ShieldCheck, Sprout } from "lucide-react";
 
 export const metadata: Metadata = {
   title: { absolute: "Ukrudtfri.dk | Professionel sprøjtning af græsplæner" },
@@ -131,7 +131,7 @@ export default async function HomePage() {
           <div className="mx-auto w-full max-w-xl px-1 text-center lg:mx-0 lg:px-0 lg:text-left">
             <HeroTitle />
             <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mx-0 lg:text-xl">
-              Vi gør din græsplæne ukrudtfri og flot igen i Give, Grindsted, Brande, Vejle, Billund og nærliggende byer.
+              Vi hjælper dig med professionel behandling af ukrudt i græsplænen i lokalområdet - enkelt, trygt og effektivt.
             </p>
             <PrimaryCtas className="mx-auto mt-7 w-full max-w-[22rem] justify-center sm:mt-8 sm:max-w-none lg:mx-0 lg:justify-start" />
           </div>

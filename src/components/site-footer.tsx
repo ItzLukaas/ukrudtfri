@@ -13,6 +13,7 @@ export async function SiteFooter() {
         <div className="grid gap-8 text-center md:grid-cols-[1.2fr_0.75fr_0.95fr] md:gap-10 md:text-left">
           <div className="space-y-5">
             <p className="text-xl font-semibold tracking-tight">{SITE_BRAND}</p>
+            <p className="text-sm font-semibold text-[#f3f8f4]">Alle kontaktoplysninger</p>
             <div className="mx-auto flex max-w-sm flex-col gap-2.5 md:mx-0">
               <a
                 className="inline-flex items-center justify-center gap-2.5 rounded-md px-1 py-1 text-sm text-[#d7e3da] transition-colors hover:text-white md:justify-start"
@@ -87,7 +88,7 @@ export async function SiteFooter() {
               ].map(([slug, city]) => (
                 <Link
                   key={slug}
-                  href="/"
+                  href={`/byer/${slug}`}
                   className="inline-flex items-center justify-center gap-1.5 transition-colors hover:text-white md:justify-start"
                 >
                   <MapPin className="size-3.5 opacity-75" />
@@ -95,6 +96,12 @@ export async function SiteFooter() {
                 </Link>
               ))}
             </div>
+            <Link
+              href="/byer"
+              className="mx-auto inline-flex w-fit items-center justify-center gap-1.5 pt-2 text-sm text-[#c6d2ca] transition-colors hover:text-white md:mx-0 md:justify-start"
+            >
+              Se flere byer
+            </Link>
           </div>
         </div>
         <Separator className="my-8 bg-[#415044]" />

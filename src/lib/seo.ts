@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CityPageConfig } from "@/lib/city-pages";
 import { CONTACT_EMAIL, SITE_BRAND, SITE_URL } from "@/lib/site-config";
 
 export const SERVICE_CITIES = [
@@ -10,6 +11,27 @@ export const SERVICE_CITIES = [
   "Jelling",
   "Bredsten",
   "Tørring",
+  "Thyregod",
+  "Kollemorten",
+  "Givskud",
+  "Gadbjerg",
+  "Vandel",
+  "Ødsted",
+  "Egtved",
+  "Randbøl",
+  "Nørup",
+  "Lindeballe",
+  "Gødding",
+  "Tørskind",
+  "Filskov",
+  "Hejnsvig",
+  "Vorbasse",
+  "Sdr. Omme",
+  "Stenderup-Krogager",
+  "Hampen",
+  "Hjøllund",
+  "Nørre Snede",
+  "Ølgod",
 ] as const;
 
 export const DEFAULT_SEO_TITLE = "Ukrudtfri.dk | Professionel sprøjtning af græsplæner";
@@ -76,3 +98,57 @@ export const websiteJsonLd = {
   url: SITE_URL,
   inLanguage: "da-DK",
 } as const;
+
+export function buildCityServiceJsonLd(city: string, path: string, description: string) {
+  const pageUrl = `${SITE_URL}${path}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `Ukrudtsbekæmpelse af græsplæne i ${city}`,
+    description,
+    areaServed: {
+      "@type": "City",
+      name: city,
+    },
+    serviceType: [
+      `ukrudtsbekæmpelse ${city}`,
+      `fjern ukrudt græsplæne ${city}`,
+      `ukrudt i græsplæne behandling ${city}`,
+      "sprøjtning af ukrudt i græsplæne",
+      "ukrudtsbekæmpelse pris pr m²",
+    ],
+    provider: {
+      "@type": "LocalBusiness",
+      name: SITE_BRAND,
+      url: SITE_URL,
+      telephone: "+4541820046",
+      email: CONTACT_EMAIL,
+    },
+    url: pageUrl,
+    inLanguage: "da-DK",
+  } as const;
+}
+
+export function buildCityPageMetadata(config: CityPageConfig): Metadata {
+  const path = `/byer/${config.slug}`;
+  const title = `Ukrudtsbekæmpelse i ${config.city} | Professionel sprøjtning af græsplæne`;
+  const description = config.metaDescription;
+
+  return {
+    title,
+    description,
+    keywords: [
+      `ukrudtsbekæmpelse ${config.city}`,
+      `fjern ukrudt græsplæne ${config.city}`,
+      `sprøjtning af græsplæne ${config.city}`,
+      `ukrudt i græsplæne ${config.city}`,
+    ],
+    alternates: { canonical: `${SITE_URL}${path}` },
+    openGraph: {
+      url: `${SITE_URL}${path}`,
+      title,
+      description,
+    },
+  };
+}

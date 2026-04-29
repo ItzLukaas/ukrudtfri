@@ -26,7 +26,7 @@ export function SiteHeader({ baseLabel, baseLatitude, baseLongitude }: { baseLab
           >
             Book sprøjtning af din græsplæne på under 2 min
           </Link>
-          <div className="flex items-center gap-x-2 text-[11px] sm:shrink-0 sm:gap-x-4 sm:text-sm">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:shrink-0 sm:gap-x-4 sm:text-sm">
             <a
               href="tel:+4541820046"
               className="inline-flex min-h-10 items-center gap-1 text-[#d7e3da] transition-colors hover:text-white"
