@@ -69,6 +69,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="da" className={`${dmSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <head>
+        <script
+          id="Cookiebot"
+          src="https://consent.cookiebot.com/uc.js"
+          data-cbid="c6d79fce-f48c-4891-81bf-8015db0ba290"
+          data-blockingmode="auto"
+          type="text/javascript"
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <AppProviders>{children}</AppProviders>
         <Script src="//code.tidio.co/pecppzzx0xibng9x5yvaunutm9nl12ti.js" strategy="afterInteractive" />
