@@ -360,43 +360,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border/60 bg-background">
-        <div className={shell}>
-          <SectionHeader
-            eyebrow="Lokale bysider"
-            title="Find ukrudtsbekæmpelse i din by"
-            subtitle="Læs om lokal pris, dækning og booking på vores bysider for ukrudtsbekæmpelse af græsplæner."
-          />
-          <div className="mt-8 flex flex-wrap justify-center gap-2 sm:gap-3">
-            {[
-              ["give", "Give"],
-              ["grindsted", "Grindsted"],
-              ["brande", "Brande"],
-              ["vejle", "Vejle"],
-              ["billund", "Billund"],
-              ["jelling", "Jelling"],
-            ].map(([slug, city]) => (
-              <Link
-                key={slug}
-                href={`/byer/${slug}`}
-                className={cn(
-                  buttonVariants({ variant: "outline" }),
-                  "min-h-10 rounded-full border-border px-4 text-sm font-medium",
-                )}
-              >
-                Ukrudtsbekæmpelse i {city}
-              </Link>
-            ))}
-            <Link
-              href="/byer"
-              className={cn(buttonVariants({ variant: "ghost" }), "min-h-10 rounded-full px-4 text-sm font-semibold")}
-            >
-              Se alle byer
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section id="faq" className="scroll-mt-36 border-b border-border/60 bg-muted/35">
         <div className={shell}>
