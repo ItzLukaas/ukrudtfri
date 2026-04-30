@@ -81,6 +81,9 @@ model OpenSlot {
   createdAt DateTime @default(now())
 
   booking Booking?
+
+  @@index([startsAt])
+  @@index([endsAt])
 }
 
 /// Admin-defined unavailability (overlapping open slots are hidden)
@@ -90,6 +93,9 @@ model BlockedWindow {
   endsAt    DateTime
   note      String?
   createdAt DateTime @default(now())
+
+  @@index([startsAt])
+  @@index([endsAt])
 }
 
 model Booking {
@@ -117,4 +123,8 @@ model Booking {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([createdAt])
+  @@index([customerEmail])
 }

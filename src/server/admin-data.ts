@@ -139,8 +139,10 @@ export async function getAdminCalendarData(): Promise<
   Pick<AdminDashboardPayload, "slotsDetailed" | "blocks" | "icalFeedUrl" | "icalWebcalUrl" | "icalFeedMissingEnv">
 > {
   const icalFeed = getIcalFeedConfig();
+  const fromDate = subDays(new Date(), 7);
   const [slots, blocks] = await Promise.all([
     prisma.openSlot.findMany({
+      where: { endsAt: { gte: fromDate } },
       orderBy: { startsAt: "asc" },
       take: 400,
       select: {
@@ -251,7 +253,9 @@ export async function getAdminBookingsData(): Promise<Pick<AdminDashboardPayload
 
 export async function getAdminAvailabilityData(): Promise<Pick<AdminDashboardPayload, "uiDefaults" | "slots">> {
   const today = new Date();
+  const fromDate = subDays(today, 7);
   const slots = await prisma.openSlot.findMany({
+    where: { endsAt: { gte: fromDate } },
     orderBy: { startsAt: "asc" },
     take: 400,
     select: { id: true, startsAt: true, endsAt: true, booking: { select: { id: true, status: true } } },
@@ -320,6 +324,7 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
   const today = new Date();
   const monthStart = startOfMonth(today);
   const histogramFrom = subDays(today, 56);
+  const slotsFromDate = subDays(today, 7);
 
   const icalFeed = getIcalFeedConfig();
 
@@ -336,6 +341,7 @@ export async function getAdminDashboardPayload(): Promise<AdminDashboardPayload>
   ] = await Promise.all([
     getSiteSettings(),
     prisma.openSlot.findMany({
+      where: { endsAt: { gte: slotsFromDate } },
       orderBy: { startsAt: "asc" },
       take: 400,
       select: {

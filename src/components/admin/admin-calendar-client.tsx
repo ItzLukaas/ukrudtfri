@@ -85,6 +85,43 @@ export function AdminCalendarClient({
     () => eachDayOfInterval({ start: gridStart, end: gridEnd }),
     [gridStart, gridEnd],
   );
+  const daySlotHits = useMemo(() => {
+    const map = new Map<string, SlotD[]>();
+    for (const day of days) {
+      map.set(format(day, "yyyy-MM-dd"), []);
+    }
+
+    for (const slot of slotsDetailed) {
+      const rangeStart = new Date(slot.startsAt);
+      const rangeEnd = new Date(slot.endsAt);
+      for (const day of days) {
+        if (overlapsDay(rangeStart, rangeEnd, day)) {
+          map.get(format(day, "yyyy-MM-dd"))?.push(slot);
+        }
+      }
+    }
+
+    return map;
+  }, [days, slotsDetailed]);
+
+  const dayBlockHits = useMemo(() => {
+    const map = new Map<string, BlockD[]>();
+    for (const day of days) {
+      map.set(format(day, "yyyy-MM-dd"), []);
+    }
+
+    for (const block of blocks) {
+      const rangeStart = new Date(block.startsAt);
+      const rangeEnd = new Date(block.endsAt);
+      for (const day of days) {
+        if (overlapsDay(rangeStart, rangeEnd, day)) {
+          map.get(format(day, "yyyy-MM-dd"))?.push(block);
+        }
+      }
+    }
+
+    return map;
+  }, [blocks, days]);
 
   function openSlot(s: SlotD) {
     setPanel({ kind: "slot", slot: s });
@@ -137,12 +174,9 @@ export function AdminCalendarClient({
           <div className="grid grid-cols-7 divide-x divide-border/60">
             {days.map((day) => {
               const inMonth = isSameMonth(day, cursor);
-              const slotHits = slotsDetailed.filter((s) =>
-                overlapsDay(new Date(s.startsAt), new Date(s.endsAt), day),
-              );
-              const blockHits = blocks.filter((b) =>
-                overlapsDay(new Date(b.startsAt), new Date(b.endsAt), day),
-              );
+              const dayKey = format(day, "yyyy-MM-dd");
+              const slotHits = daySlotHits.get(dayKey) ?? [];
+              const blockHits = dayBlockHits.get(dayKey) ?? [];
 
               return (
                 <div
