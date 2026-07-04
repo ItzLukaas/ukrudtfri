@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   ClipboardPlus,
   CircleUserRound,
   CalendarDays,
@@ -18,6 +20,7 @@ import { signOutAction } from "@/server/auth-actions";
 
 const nav = [
   { href: "/admin", label: "Overblik", icon: LayoutDashboard },
+  { href: "/admin/stats", label: "Statistik", icon: BarChart3 },
   { href: "/admin/calendar", label: "Kalender", icon: CalendarDays },
   { href: "/admin/bookings", label: "Bookinger", icon: CalendarRange },
   { href: "/admin/manual-booking", label: "Manuel booking", icon: ClipboardPlus },
@@ -57,7 +60,16 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-6 lg:flex-row lg:gap-10">
       <aside className="lg:w-56 lg:shrink-0">
+        <Link href="/" className="mb-3 flex justify-center lg:hidden" aria-label="Til forsiden">
+          <Image src="/images/logo.png" alt="Ukrudtfri" width={200} height={54} className="h-10 w-auto object-contain" />
+        </Link>
         <div className="lg:sticky lg:top-6 lg:rounded-xl lg:border lg:border-border/60 lg:bg-card/50 lg:p-3">
+          <Link
+            href="/"
+            className="mb-4 hidden items-center gap-2 rounded-lg border border-border/60 bg-background/80 px-2 py-2 transition-colors hover:bg-muted/50 lg:flex"
+          >
+            <Image src="/images/logo.png" alt="Ukrudtfri" width={200} height={54} className="h-9 w-auto object-contain" />
+          </Link>
           <p className="mb-2 hidden px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground lg:block">
             Menu
           </p>

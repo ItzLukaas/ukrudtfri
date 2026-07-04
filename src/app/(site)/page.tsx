@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
+import { DEFAULT_SEO_DESCRIPTION, SITE_KEYWORDS } from "@/lib/seo";
 import { HeroTitle } from "@/components/hero-title";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -12,37 +13,36 @@ import { ArrowRight, BadgeCheck, CalendarDays, ClipboardCheck, Leaf, ShieldCheck
 
 export const metadata: Metadata = {
   title: { absolute: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk" },
-  description:
-    "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.",
+  description: DEFAULT_SEO_DESCRIPTION,
+  keywords: [...SITE_KEYWORDS],
   alternates: { canonical: SITE_URL },
   openGraph: {
     url: SITE_URL,
     title: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk",
-    description:
-      "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.",
+    description: DEFAULT_SEO_DESCRIPTION,
     images: [{ url: `${SITE_URL}/images/hero-3.jpg`, width: 1200, height: 630, alt: SITE_BRAND }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ukrudtsbekæmpelse og sprøjtning af græsplæner | Ukrudtfri.dk",
-    description:
-      "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.",
+    description: DEFAULT_SEO_DESCRIPTION,
     images: [`${SITE_URL}/images/hero-3.jpg`],
   },
 };
 
-const shell = "mx-auto w-full max-w-6xl px-4 py-14 sm:py-20";
+const shell = "mx-auto w-full max-w-6xl px-4 py-16 sm:py-20 lg:py-24";
 
-const eyebrowClass = "text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground";
+const eyebrowClass =
+  "text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground sm:text-xs";
 
 /** Neutral dot grid — Tailwind-marketing “texture” uden farvet gradient */
 function DotTexture({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "pointer-events-none absolute inset-0 opacity-[0.45]",
-        "bg-[radial-gradient(circle_at_center,_rgb(15_23_42_/_0.06)_1px,_transparent_1px)]",
-        "bg-[size:20px_20px]",
+        "pointer-events-none absolute inset-0 opacity-[0.38]",
+        "bg-[radial-gradient(circle_at_center,_rgb(15_23_42_/_0.055)_1px,_transparent_1px)]",
+        "bg-[size:18px_18px]",
         className,
       )}
       aria-hidden
@@ -65,18 +65,22 @@ function SectionHeader({
   return (
     <div className={cn("max-w-3xl", centered ? "mx-auto text-center" : "text-left")}>
       {centered ? (
-        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-primary/70" aria-hidden />
-      ) : null}
+        <div className="mx-auto mb-4 flex justify-center" aria-hidden>
+          <span className="h-1 w-14 rounded-full bg-gradient-to-r from-primary/15 via-primary/65 to-primary/15" />
+        </div>
+      ) : (
+        <span className="mb-3 block h-1 w-10 rounded-full bg-primary/55" aria-hidden />
+      )}
       <p className={eyebrowClass}>{eyebrow}</p>
       <h2
         className={cn(
-          "mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl",
+          "mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12]",
           align === "left" && "sm:text-4xl",
         )}
       >
         {title}
       </h2>
-      <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">{subtitle}</p>
+      <p className="mt-4 text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">{subtitle}</p>
     </div>
   );
 }
@@ -87,7 +91,7 @@ function PrimaryCtas({ className }: { className?: string }) {
       <Link
         className={cn(
           buttonVariants({ size: "lg" }),
-          "group min-h-12 w-full rounded-lg px-8 text-base font-semibold shadow-sm transition-transform hover:-translate-y-0.5 sm:w-auto",
+          "group min-h-12 w-full rounded-xl px-8 text-base font-semibold shadow-md shadow-primary/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/15 sm:w-auto",
         )}
         href="/booking"
       >
@@ -97,7 +101,7 @@ function PrimaryCtas({ className }: { className?: string }) {
       <Link
         className={cn(
           buttonVariants({ size: "lg", variant: "outline" }),
-          "min-h-12 w-full rounded-lg border-border bg-background px-8 text-base font-semibold shadow-sm sm:w-auto",
+          "min-h-12 w-full rounded-xl border-border/80 bg-background/80 px-8 text-base font-semibold shadow-sm backdrop-blur-[2px] transition-all duration-200 hover:border-primary/25 hover:bg-muted/50 hover:shadow-md sm:w-auto",
         )}
         href="/kontakt"
       >
@@ -120,8 +124,12 @@ export default async function HomePage() {
   return (
     <main className="bg-background">
       {/* Hero — split + texture + trust pills (Tailwind UI-lignende) */}
-      <section className="relative overflow-hidden border-b border-border/60 bg-background">
+      <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-background via-background to-muted/15">
         <DotTexture />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent sm:h-40"
+        />
         <div
           className={cn(
             "mx-auto w-full max-w-6xl px-4 py-12 sm:py-16 lg:py-24",
@@ -136,12 +144,13 @@ export default async function HomePage() {
             <PrimaryCtas className="mx-auto mt-7 w-full max-w-[22rem] justify-center sm:mt-8 sm:max-w-none lg:mx-0 lg:justify-start" />
           </div>
           <div className="w-full max-w-md px-1 justify-self-center sm:max-w-2xl sm:px-0 lg:max-w-none lg:justify-self-end">
-            <div className="grid grid-cols-2 gap-1.5 md:grid-cols-[1.12fr_0.42fr] md:grid-rows-2 md:gap-2.5 md:min-h-[20rem] lg:min-h-[24rem]">
+            <div className="rounded-2xl bg-gradient-to-br from-muted/50 via-muted/25 to-transparent p-1 shadow-lg ring-1 ring-border/50 sm:p-1.5">
+              <div className="grid grid-cols-2 gap-1.5 md:grid-cols-[1.12fr_0.42fr] md:grid-rows-2 md:gap-2.5 md:min-h-[20rem] lg:min-h-[24rem]">
               {heroImages.map(({ file, alt, variant }, i) => (
                 <div
                   key={file}
                   className={cn(
-                    "relative overflow-hidden rounded-none bg-transparent sm:rounded-lg sm:bg-muted",
+                    "group relative overflow-hidden rounded-none bg-transparent sm:rounded-xl sm:bg-muted/80",
                     variant === "primary" &&
                       "col-span-2 aspect-[4/3] min-h-[11.5rem] sm:min-h-[14rem] sm:aspect-[16/9] md:col-span-1 md:row-span-2 md:aspect-auto md:h-full md:min-h-[16rem] lg:min-h-[18rem]",
                     variant === "secondary" &&
@@ -153,7 +162,7 @@ export default async function HomePage() {
                     alt={alt}
                     fill
                     priority={i === 0}
-                    className="object-cover p-0"
+                    className="object-cover p-0 transition-transform duration-500 ease-out md:group-hover:scale-[1.015]"
                     sizes={
                       variant === "primary"
                         ? "(max-width: 768px) 100vw, 55vw"
@@ -162,13 +171,17 @@ export default async function HomePage() {
                   />
                 </div>
               ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Sådan foregår det */}
-      <section className="relative scroll-mt-36 border-b border-border/60 bg-muted/25" id="proces">
+      <section
+        className="relative scroll-mt-36 border-b border-border/60 bg-gradient-to-b from-muted/30 via-muted/20 to-background"
+        id="proces"
+      >
         <DotTexture className="opacity-25" />
         <div className={cn(shell, "relative")}>
           <SectionHeader
@@ -217,15 +230,15 @@ export default async function HomePage() {
       </section>
 
       {/* Hvorfor vælge os */}
-      <section className="relative scroll-mt-36 border-b border-border/60 bg-background" id="fordele">
-        <DotTexture className="opacity-30" />
+      <section className="relative scroll-mt-36 border-b border-border/60 bg-gradient-to-b from-background via-background to-muted/10" id="fordele">
+        <DotTexture className="opacity-28" />
         <div className={cn(shell, "relative")}>
           <SectionHeader
             eyebrow="Fordele"
             title="Hvorfor vælge os?"
             subtitle="Du får en afslappet og professionel løsning, hvor vi tager os af ukrudtet og hjælper græsset med at stå tættere og grønnere gennem sæsonen."
           />
-          <div className="mt-10 grid grid-cols-1 text-center sm:mt-14 sm:grid-cols-2 sm:[&>*:nth-child(2n)]:border-l sm:[&>*:nth-child(n+3)]:border-t sm:[&>*]:border-border/60 lg:mt-18">
+          <div className="mt-10 grid grid-cols-1 text-center sm:mt-14 sm:grid-cols-2 sm:[&>*:nth-child(2n)]:border-l sm:[&>*:nth-child(n+3)]:border-t sm:[&>*]:border-border/50 lg:mt-18">
             <WhyCard
               icon={<Sprout className="size-5" />}
               iconBgClass="bg-emerald-100"
@@ -259,8 +272,9 @@ export default async function HomePage() {
       </section>
 
       {/* Om os */}
-      <section className="scroll-mt-36 border-b border-border/60 bg-muted/20" id="om-os">
-        <div className={shell}>
+      <section className="relative scroll-mt-36 border-b border-border/60 bg-muted/20" id="om-os">
+        <DotTexture className="opacity-20" />
+        <div className={cn(shell, "relative")}>
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12">
             <div className="reveal-up space-y-6 lg:order-1">
               <p className={eyebrowClass}>Om os</p>
@@ -298,7 +312,7 @@ export default async function HomePage() {
                 href="/kontakt"
                 className={cn(
                   buttonVariants({ size: "lg", variant: "outline" }),
-                  "group min-h-11 rounded-lg border-border bg-background px-6 text-base font-semibold",
+                  "group min-h-11 rounded-xl border-border/80 bg-background/90 px-6 text-base font-semibold shadow-sm transition-all duration-200 hover:border-primary/25 hover:bg-muted/40 hover:shadow-md",
                 )}
               >
                 Kontakt os
@@ -306,7 +320,7 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="reveal-up relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-border/70 bg-muted lg:order-2">
+            <div className="reveal-up relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-md ring-1 ring-black/[0.04] lg:order-2">
               <Image
                 src="/images/image-5.webp"
                 alt="Tæt grøn græsplæne i haven"
@@ -320,10 +334,10 @@ export default async function HomePage() {
       </section>
 
       {/* Billede: public/images/image-4.webp */}
-      <section className="scroll-mt-32 border-b border-border/60 bg-background">
+      <section className="scroll-mt-32 border-b border-border/60 bg-gradient-to-b from-background to-muted/10">
         <div className={cn(shell, "relative")}>
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-12">
-            <div className="reveal-up relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted shadow-sm">
+            <div className="reveal-up relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-muted shadow-md ring-1 ring-border/40">
               <Image
                 src="/images/image-4.webp"
                 alt="Professionel pleje af græsplæne med udstyr i brug"
@@ -349,7 +363,7 @@ export default async function HomePage() {
                 href="/booking"
                 className={cn(
                   buttonVariants({ size: "lg" }),
-                  "group inline-flex min-h-12 w-full max-w-xs items-center justify-center rounded-lg text-base font-semibold shadow-sm transition-transform hover:-translate-y-0.5 sm:w-auto",
+                  "group inline-flex min-h-12 w-full max-w-xs items-center justify-center rounded-xl text-base font-semibold shadow-md shadow-primary/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/15 sm:w-auto",
                 )}
               >
                 Book tid
@@ -360,8 +374,54 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Ekstra brødtekst + interne links (SEO) */}
+      <section className="scroll-mt-36 border-b border-border/60 bg-background" id="mere-om-service">
+        <div className={shell}>
+          <SectionHeader
+            align="left"
+            eyebrow="Godt at vide"
+            title="Ukrudtsbekæmpelse og sprøjtning med fokus på din græsplæne"
+            subtitle="Kort fortalt: vi hjælper private og virksomheder med målrettet ukrudtsbekæmpelse, så græsset får bedre plads og plænen bliver pænere og mere ensartet gennem sæsonen."
+          />
+          <div className="mt-10 max-w-3xl space-y-5 text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p>
+              Hos {SITE_BRAND} arbejder vi med professionel sprøjtning af græsplæner og ukrudtsbekæmpelse i Give,
+              Grindsted, Brande, Vejle, Billund, Jelling og mange andre byer i området. Når du{" "}
+              <Link href="/booking" className="font-medium text-primary underline-offset-4 hover:underline">
+                booker en tid online
+              </Link>
+              , sender du adresse og areal — derefter gennemgår vi bookingen og bekræfter tidspunktet, så du ved
+              præcis, hvornår vi kommer.
+            </p>
+            <p>
+              Prisen følger dit plæneareal (kr. pr. m² med minimumspris), og du kan altid starte med en uforpligtende
+              snak via vores{" "}
+              <Link href="/kontakt" className="font-medium text-primary underline-offset-4 hover:underline">
+                kontaktformular
+              </Link>
+              . Vil du læse mere om lokalt indhold og søgeord pr. by, finder du oversigten på{" "}
+              <Link href="/byer" className="font-medium text-primary underline-offset-4 hover:underline">
+                vores bysider
+              </Link>{" "}
+              — fx dedikerede sider for enkelte byer med beskrivelse og mulighed for booking.
+            </p>
+            <p>
+              Vi kombinerer erfaring, godkendte produkter og de nødvendige sprøjtecertifikater, så behandlingen bliver
+              udført forsvarligt. Har du brug for inspiration til Grindsted-området, kan du også læse siden{" "}
+              <Link
+                href="/ukrudtsbekaempelse-grindsted"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                ukrudtsbekæmpelse Grindsted
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
-      <section id="faq" className="scroll-mt-36 border-b border-border/60 bg-muted/35">
+      <section id="faq" className="scroll-mt-36 border-b border-border/60 bg-gradient-to-b from-muted/40 via-muted/25 to-background">
         <div className={shell}>
           <SectionHeader
             eyebrow="FAQ"
@@ -387,16 +447,24 @@ export default async function HomePage() {
                 a: "Ja. Vi anvender godkendte produkter og udfører behandlingen med de nødvendige sprøjtecertifikater. Det betyder, at du får en løsning der både er effektiv, ansvarlig og udført korrekt.",
               },
             ].map((item) => (
-              <details key={item.q} className="group rounded-xl border border-border bg-background px-5 py-4">
-                <summary className="cursor-pointer list-none text-base font-semibold text-foreground marker:hidden">
+              <details
+                key={item.q}
+                className="group rounded-2xl border border-border/70 bg-background/90 px-5 py-4 shadow-sm ring-1 ring-black/[0.03] transition-[box-shadow,background-color] duration-200 open:bg-background open:shadow-md open:ring-primary/10 hover:border-border hover:bg-muted/25"
+              >
+                <summary className="cursor-pointer list-none text-base font-semibold text-foreground marker:hidden outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2">
                   <span className="flex min-h-12 items-center justify-between gap-4 py-1">
                     {item.q}
-                    <span className="shrink-0 text-muted-foreground transition-transform group-open:rotate-45" aria-hidden>
+                    <span
+                      className="flex size-8 shrink-0 items-center justify-center rounded-full border border-border/60 bg-muted/40 text-muted-foreground transition-transform duration-200 group-open:rotate-45 group-open:border-primary/20 group-open:bg-primary/10 group-open:text-primary"
+                      aria-hidden
+                    >
                       +
                     </span>
                   </span>
                 </summary>
-                <p className="mt-3 pr-8 text-sm leading-relaxed text-muted-foreground sm:text-base">{item.a}</p>
+                <p className="mt-1 border-t border-border/50 pr-2 pt-4 text-sm leading-relaxed text-muted-foreground sm:pr-8 sm:text-base">
+                  {item.a}
+                </p>
               </details>
             ))}
           </div>
@@ -421,24 +489,29 @@ function WhyCard({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col items-center justify-center border-0 px-4 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center border-0 px-4 py-10 transition-colors duration-300 sm:px-8 sm:py-12 sm:hover:bg-muted/15 lg:px-12 lg:py-14",
+        className,
+      )}
+    >
       <span
         className={cn(
-          "inline-flex size-14 items-center justify-center rounded-full text-foreground transition-transform duration-300 md:hover:scale-105",
+          "inline-flex size-14 items-center justify-center rounded-full text-foreground shadow-sm ring-1 ring-black/[0.05] transition-transform duration-300 md:hover:scale-105",
           iconBgClass,
         )}
       >
         <span className="text-foreground">{icon}</span>
       </span>
-      <h3 className="mt-8 text-xl font-bold text-foreground">{title}</h3>
-      <p className="mt-4 max-w-sm text-base leading-relaxed text-muted-foreground">{text}</p>
+      <h3 className="mt-8 text-xl font-semibold tracking-tight text-foreground">{title}</h3>
+      <p className="mt-4 max-w-sm text-pretty text-base leading-relaxed text-muted-foreground">{text}</p>
     </div>
   );
 }
 
 function ProcessIcon({ icon }: { icon: React.ReactNode }) {
   return (
-    <span className="inline-flex size-10 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground shadow-sm ring-1 ring-black/[0.03]">
+    <span className="inline-flex size-10 items-center justify-center rounded-2xl border border-border/80 bg-background/95 text-muted-foreground shadow-sm ring-1 ring-black/[0.04]">
       {icon}
     </span>
   );
@@ -446,7 +519,12 @@ function ProcessIcon({ icon }: { icon: React.ReactNode }) {
 
 function ProcessStep({ title, text, index, className }: { title: string; text: string; index: string; className?: string }) {
   return (
-    <Card className={cn("h-full border-border/70 bg-background py-0 shadow-sm ring-1 ring-black/[0.03] transition-shadow hover:shadow-md", className)}>
+    <Card
+      className={cn(
+        "h-full rounded-2xl border-border/60 bg-background/95 py-0 shadow-sm ring-1 ring-black/[0.04] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/15 hover:shadow-md",
+        className,
+      )}
+    >
       <CardHeader className="pb-1 pt-5">
         <Badge variant="secondary" className="h-6 w-fit px-2 font-semibold tabular-nums">
           {index}

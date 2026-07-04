@@ -3,7 +3,8 @@ import { DM_Sans, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { AppProviders } from "@/components/app-providers";
-import { PlausibleAnalytics } from "@/components/plausible-analytics";
+import { MetaPixel } from "@/components/meta-pixel";
+import { SiteAnalytics } from "@/components/site-analytics";
 import { SITE_BRAND, SITE_URL } from "@/lib/site-config";
 import { DEFAULT_SEO_DESCRIPTION, DEFAULT_SEO_TITLE, SITE_KEYWORDS, defaultOpenGraph, defaultTwitter } from "@/lib/seo";
 
@@ -67,21 +68,26 @@ export const metadata: Metadata = {
   },
 };
 
+const COOKIEBOT_ID = process.env.NEXT_PUBLIC_COOKIEBOT_ID ?? "c6d79fce-f48c-4891-81bf-8015db0ba290";
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="da" className={`${dmSans.variable} ${geistMono.variable} h-full antialiased`}>
       <head>
-        <Script
-          id="Cookiebot"
-          src="https://consent.cookiebot.com/uc.js"
-          data-cbid="c6d79fce-f48c-4891-81bf-8015db0ba290"
-          data-blockingmode="auto"
-          strategy="beforeInteractive"
-        />
+        {COOKIEBOT_ID ? (
+          <Script
+            id="Cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid={COOKIEBOT_ID}
+            data-blockingmode="auto"
+            strategy="beforeInteractive"
+          />
+        ) : null}
       </head>
       <body className="min-h-full flex flex-col">
         <AppProviders>{children}</AppProviders>
-        <PlausibleAnalytics />
+        <SiteAnalytics />
+        <MetaPixel />
         <Script src="//code.tidio.co/pecppzzx0xibng9x5yvaunutm9nl12ti.js" strategy="afterInteractive" />
       </body>
     </html>

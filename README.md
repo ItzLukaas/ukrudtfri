@@ -20,7 +20,7 @@ Implemented in code:
 - Stronger keyword placement in key headings and section titles.
 - Expanded copy where pages were previously thin (`/byer` and local city templates).
 - Mobile-oriented frontend performance settings in `next.config.ts` (`compress`, AVIF/WebP, no `x-powered-by`).
-- Optional lightweight analytics via Plausible in `src/components/plausible-analytics.tsx`.
+- Optional self-hosted analytics: **Umami** or **Plausible CE** via `src/components/site-analytics.tsx` (see `.env.example` and `docker/umami.compose.yaml`).
 - Inline style removal in `src/components/animated-faq-title.tsx`.
 
 Requires external/manual setup:
@@ -30,16 +30,39 @@ Requires external/manual setup:
 - Off-site link building outreach and partner directory placement.
 - Search Console/Bing verification and ongoing indexing monitoring.
 
-## Analytics setup (Plausible)
+## Analytics setup (self-hosted)
 
-Set these env vars in deployment:
+**Umami** (recommended) — samme stack som jeres site (Next.js), kan **hostes direkte på Vercel** som et *andet* Vercel-projekt end hovedsitet (fx projektet `ukrudtfri-stats` med domænet `stats.ukrudtfri.dk`).
+
+1. Opret **Postgres** et sted Umami understøtter: [Neon](https://neon.tech), [Supabase](https://supabase.com), eller Vercels egne storage-integrations — kopier `DATABASE_URL`.
+2. Følg den officielle guide: [Running on Vercel (Umami)](https://umami.is/docs/guides/running-on-vercel) (fork/import af Umami-repo, sæt `DATABASE_URL`, build, deploy).
+3. I Vercel for **Umami-projektet**: **Settings → Domains** → tilføj `stats.ukrudtfri.dk` (DNS hos jeres udbyder: CNAME til `cname.vercel-dns.com` som Vercel viser).
+4. Log ind på `https://stats.ukrudtfri.dk`, opret admin, **Websites → Add** med domænet `ukrudtfri.dk`, kopier **Website ID**.
+5. I **hovedprojektet** (denne repo / ukrudtfri.dk på Vercel):
 
 ```env
-NEXT_PUBLIC_PLAUSIBLE_DOMAIN=www.ukrudtfri.dk
-NEXT_PUBLIC_PLAUSIBLE_SRC=https://plausible.io/js/script.js
+NEXT_PUBLIC_UMAMI_URL=https://stats.ukrudtfri.dk
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=<uuid from Umami>
 ```
 
-`NEXT_PUBLIC_PLAUSIBLE_DOMAIN` is required. If empty, no analytics script is loaded.
+**Alternativ (egen server / Docker):** `docker/umami.compose.yaml` + TLS-proxy foran — samme env på hovedsitet.
+
+**Plausible CE:** self-host Plausible, derefter `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` + `NEXT_PUBLIC_PLAUSIBLE_SRC` (brug ikke samtidig med Umami).
+
+Do not set both Umami and Plausible at once (Umami wins if both are set).
+
+If neither Umami nor Plausible env vars are set, no analytics script is loaded.
+
+### Statistik i admin (samme login som /admin)
+
+Når Umami kører, kan du vise tal i **egen UI** på `/admin/stats` (logo + menu matcher admin). Sæt desuden server-only:
+
+```env
+UMAMI_USERNAME=din_umami_bruger
+UMAMI_PASSWORD=din_umami_adgangskode
+```
+
+(Brug gerne en dedikeret Umami-bruger med læseadgang hvis du vil skærme den primære admin-konto.)
 
 ## External platform and DNS setup
 

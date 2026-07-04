@@ -69,6 +69,9 @@ export async function SiteFooter() {
               <Link href="/#faq" className="transition-colors hover:text-white">
                 Spørgsmål
               </Link>
+              <Link href="/#mere-om-service" className="transition-colors hover:text-white">
+                Mere om service
+              </Link>
               <Link href="/booking" className="transition-colors hover:text-white">
                 Book din tid
               </Link>

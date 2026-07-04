@@ -37,7 +37,7 @@ export const SERVICE_CITIES = [
 export const DEFAULT_SEO_TITLE = "Ukrudtfri.dk | Professionel sprøjtning af græsplæner";
 
 export const DEFAULT_SEO_DESCRIPTION =
-  "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande og Vejle. Certificeret service med tydelig pris og hurtig booking.";
+  "Professionel ukrudtsbekæmpelse og sprøjtning af græsplæner i Give, Grindsted, Brande, Vejle, Billund, Jelling og omegn. Vi bekæmper ukrudt i græsplænen med godkendte produkter og sprøjtecertifikat, så du får et mere tæt og ensartet græs. Certificeret service med tydelig pris pr. m², minimumspris og hurtig online booking — du betaler først efter udført arbejde.";
 
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/hero-3.jpg`;
 
@@ -45,7 +45,10 @@ export const SITE_KEYWORDS = [
   "ukrudtfri",
   "ukrudtfri.dk",
   "sprøjtning af græsplæne",
+  "sprøjtning af græsplæner",
   "ukrudtsbekæmpelse",
+  "ukrudt i græsplæne",
+  "fjern ukrudt i græsplæne",
   "plænepleje",
   "græsplæne",
   "sprøjtecertifikat",
@@ -53,6 +56,14 @@ export const SITE_KEYWORDS = [
   "Grindsted",
   "Brande",
   "Vejle",
+  "Billund",
+  "Jelling",
+  "Bredsten",
+  "Tørring",
+  "Ølgod",
+  "Egtved",
+  "Givskud",
+  "Vorbasse",
 ] as const;
 
 export const defaultOpenGraph = {
@@ -93,9 +104,16 @@ export const localBusinessJsonLd = {
 export const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
   name: SITE_BRAND,
   url: SITE_URL,
+  description: DEFAULT_SEO_DESCRIPTION,
   inLanguage: "da-DK",
+  publisher: {
+    "@type": "Organization",
+    name: SITE_BRAND,
+    url: SITE_URL,
+  },
 } as const;
 
 export function buildCityServiceJsonLd(city: string, path: string, description: string) {

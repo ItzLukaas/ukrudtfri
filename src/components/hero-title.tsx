@@ -23,7 +23,7 @@ export function HeroTitle() {
   const currentWord = WORDS[wordIndex];
 
   return (
-    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+    <h1 className="text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl sm:leading-[1.06] lg:text-6xl lg:leading-[1.05]">
       <span className="block">
         Få en flot, tæt og
       </span>
